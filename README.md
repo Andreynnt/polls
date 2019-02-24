@@ -13,4 +13,4 @@ Go to created folder and run:
 
 `npm run deploy`
 
-Приложение обновится на [GitHub Pages](https://andreynnt.github.io/polls/)
+Приложение обновится на [GitHub Pages](https://andreynnt.github.io/polls/) и в ветке gh-pages, где лежит build
