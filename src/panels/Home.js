@@ -15,7 +15,7 @@ const Home = ({ id, go, fetchedUser }) => (
 			</ListItem>
 		</Group>}
 
-		<Group title="Navigation Example">
+		<Group title="Hello world">
 			<Div>
 				<Button size="xl" level="2" onClick={go} data-to="persik">
 					Show me the Zhenya, please

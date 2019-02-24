@@ -12,3 +12,5 @@ Go to created folder and run:
 ## How to deploy
 
 `npm run deploy`
+
+Приложение обновится на [GitHub Pages](https://andreynnt.github.io/polls/)
