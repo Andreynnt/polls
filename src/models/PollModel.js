@@ -1,18 +1,30 @@
 import PropTypes from 'prop-types';
 
 export default class PollModel {
-    constructor({title, author}) {
-        this.title = title;
-        this.author = author;
+    constructor(data) {
+        this.id = data.id;
+        this.name = data.name;
+        this.description = data.description;
+        this.author = data.author;
+        this.polls = data.polls;
     }
 }
 
 PollModel.propTypes = {
-    title: PropTypes.string,
-    author: PropTypes.string
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
+    polls: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        question: PropTypes.string.isRequired,
+        answers: PropTypes.array.isRequired,
+        type: PropTypes.string.isRequired
+    })).isRequired
 };
 
 PollModel.defaultProps = {
-    title: '',
+    name: '',
+    description: '',
     author: ''
 };
