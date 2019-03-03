@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Alert } from '@vkontakte/vkui';
+import SCGiftIcon from "./SCGiftIcon";
+
 
 class SCAlert extends React.Component {
     render() {
@@ -14,8 +16,9 @@ class SCAlert extends React.Component {
                 }]}
                 onClose={this.props.closePopout}
             >
-                <h2>Спасибо за прохождение опроса!</h2>
-                <p>Вам начислены баллы.</p>
+                <h2>Опрос пройден!</h2>
+                <SCGiftIcon/>
+                <p>Скоро вам будут начислены баллы.</p>
             </Alert>
         );
     }

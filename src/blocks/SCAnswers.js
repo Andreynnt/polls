@@ -6,7 +6,7 @@ class SCAnswers extends React.Component {
     render() {
         return (
             this.props.answers.map((text, i) =>
-                <Radio name="radio" value={i}>{text}</Radio>
+                <Radio name="radio" key={i} value={i}>{text}</Radio>
             )
         );
     }
@@ -14,6 +14,6 @@ class SCAnswers extends React.Component {
 
 SCAnswers.propTypes = {
     answers: PropTypes.array.isRequired
-}
+};
 
 export default SCAnswers;

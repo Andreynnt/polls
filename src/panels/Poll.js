@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, Group, PanelHeader, Cell, Button, HeaderButton, platform, IOS, FormLayout, Div} from '@vkontakte/vkui';
+import { Panel, Group, PanelHeader, Button, HeaderButton, platform, IOS, FormLayout, Div} from '@vkontakte/vkui';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
 import SCAnswers from "../blocks/SCAnswers";
@@ -28,16 +28,19 @@ export default class Poll extends React.Component {
                                   </HeaderButton>}>
                     {this.props.model.author}
                 </PanelHeader>
+
                 {questionAndAnswers}
 
                 <Div style={{background: "#ebedf0"}}>
-                    <Button onClick={() => this.props.showPopout(<SCAlert closePopout={this.props.closePopout}/>)} size="xl" data-to="polls">Отправить</Button>
+                    <Button onClick={() => this.props.showPopout(<SCAlert closePopout={this.props.closePopout}/>)}
+                            size="xl"
+                            data-to="polls">
+                        Отправить
+                    </Button>
                 </Div>
-
             </Panel>
         );
     }
-
 }
 
 Poll.propTypes = {

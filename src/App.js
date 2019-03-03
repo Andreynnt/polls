@@ -7,103 +7,14 @@ import Profile from "./panels/Profile";
 import Poll from "./panels/Poll";
 import HttpService from "./services/HttpService";
 import PollModel from "./models/PollModel";
-import SCAlert from "./blocks/SCAlert";
 
-const pollsJSON= `
-[
-	{
-	  "id": "myId1",
-	  "name": "Выбор лучшей песни",
-	  "description": "Выбираем лучшую песню 2019 года.",
-	  "author": "Олег Газманов",
-	  "polls": 
-	  [
-		{ "id":"myPollId1",
-		  "question":"кто лучше?",
-		  "type":"radio",
-		  "answers": 
-		  [
-			  "Олег Газманов",
-			  "Филипп Киркоров",
-			  "Алла Пугачева",
-			  "Lil pump"
-		  ]
-		},
-		{ "id":"myPollId2",
-		  "question":"а тут кто лучше?",
-		  "type":"radio",
-		  "answers": 
-		  [
-			"Иван Дорн",
-			"Иван Ургант",
-			"Алла Михеева",
-			"Гаррет Бейл"
-		  ]
-		},
-		{ "id":"myPollId1",
-		  "question":"кто лучше?",
-		  "type":"radio",
-		  "answers": 
-		  [
-			  "Олег Газманов",
-			  "Филипп Киркоров",
-			  "Алла Пугачева",
-			  "Lil pump"
-		  ]
-		},
-		{ "id":"myPollId1",
-		  "question":"кто лучше?",
-		  "type":"radio",
-		  "answers": 
-		  [
-			  "Олег Газманов",
-			  "Филипп Киркоров",
-			  "Алла Пугачева",
-			  "Lil pump"
-		  ]
-		}
-	  ]
-	},
-	{
-	  "id": "myId2",
-	  "name": "Человек года по версии GQ",
-	  "description": "Хаски или Баста? Мальбек или гуф?",
-	  "author": "GQ",
-	  "polls": 
-	  [
-		{ "id":"myPollId1",
-		  "question":"Выберете лучшего",
-		  "type":"radio",
-		  "answers": 
-		  [
-			  "Хаски",
-			  "Баста",
-			  "Мальбек",
-			  "Гуф"
-		  ]
-		},
-		{ "id":"myPollId1",
-		  "question":"Кто хуже всех?",
-		  "type":"radio",
-		  "answers": 
-		  [
-			"Олег Газманов",
-			"Филипп Киркоров",
-			"Алла Пугачева",
-			"Lil pump"
-		  ]
-		}
-	  ]
-	}
-]`;
 
 class App extends React.Component {
 	constructor(props) {
 		super(props);
 
-		const polls = HttpService.parseJson(pollsJSON);
+		const polls = HttpService.parseDefaultJson();
 		let pollModels = polls.map(poll => new PollModel(poll));
-		console.log(pollModels);
 
 		this.state = {
 			activePanel: 'polls',
@@ -111,7 +22,8 @@ class App extends React.Component {
 			activeStory: 'polls',
 			selectedPoll: null,
 			pollModels: pollModels,
-			alert: null
+			alert: null,
+			pollsMode: 'new'
 		};
 	}
 
@@ -139,7 +51,6 @@ class App extends React.Component {
 		newState.alert = null;
 		this.setState(newState);
 	};
-
 
 	render() {
 		const preparedTabbar = (<SCTabbar activeStory={this.state.activeStory} changeActiveStory={this.changeActiveStory}/>);
