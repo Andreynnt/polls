@@ -5,77 +5,64 @@ import Polls from './panels/Polls';
 import SCTabbar from './blocks/SCTabbar';
 import Profile from "./panels/Profile";
 import Poll from "./panels/Poll";
-import HttpService from "./services/HttpService";
-import PollModel from "./models/PollModel";
+import connect from "react-redux/es/connect/connect";
 
 
 class App extends React.Component {
-	constructor(props) {
-		super(props);
-
-		const polls = HttpService.parseDefaultJson();
-		let pollModels = polls.map(poll => new PollModel(poll));
-
-		this.state = {
-			activePanel: 'polls',
-			fetchedUser: null,
-			activeStory: 'polls',
-			selectedPoll: null,
-			pollModels: pollModels,
-			alert: null,
-			pollsMode: 'new'
-		};
-	}
-
-	changeActiveStory = (e) => {
-		this.setState({activeStory: e.currentTarget.dataset.story });
-	};
-
-	changeActivePanel = (e) => {
-		this.setState({ activePanel: e.currentTarget.dataset.to })
-	};
-
-	selectCell = (model) => {
-		this.setState({ activePanel: "poll", selectedPoll: model})
-	};
-
-	setPopout = (alert) => {
-		const newState = this.state;
-		newState.alert = alert;
-		newState.activePanel = "polls";
-		this.setState(newState);
-	};
-
-	closePopout = () => {
-		const newState = this.state;
-		newState.alert = null;
-		this.setState(newState);
-	};
-
 	render() {
-		const preparedTabbar = (<SCTabbar activeStory={this.state.activeStory} changeActiveStory={this.changeActiveStory}/>);
+		const preparedTabbar = (<SCTabbar activeStory={this.props.testStore.activeStory} changeActiveStory={this.props.changeActiveStory}/>);
 		return (
-			<Epic activeStory={this.state.activeStory} tabbar={preparedTabbar}>
-				<View popout={this.state.alert} id="polls" activePanel={this.state.activePanel}>
+			<Epic activeStory={this.props.testStore.activeStory} tabbar={preparedTabbar}>
+				<View popout={this.props.testStore.alert} id="polls" activePanel={this.props.testStore.activePanel}>
 					<Polls id="polls"
-						   changeActiveStory={this.changeActiveStory}
-						   selectCell={this.selectCell}
-						   pollModels={this.state.pollModels}
+						   changeActiveStory={this.props.changeActiveStory}
+						   selectCell={this.props.selectCell}
+						   pollModels={this.props.testStore.pollModels}
+						   mode={this.props.testStore.pollsMode}
+						   changeMode={this.props.changeMode}
 					/>
 					<Poll id="poll"
-						  changeActiveStory={this.changeActiveStory}
-						  model={this.state.selectedPoll}
-						  changeActivePanel={this.changeActivePanel}
-						  showPopout={this.setPopout}
-						  closePopout={this.closePopout}
+						  changeActiveStory={this.props.changeActiveStory}
+						  model={this.props.testStore.selectedPoll}
+						  changeActivePanel={this.props.changeActivePanel}
+						  showPopout={this.props.setPopout}
+						  closePopout={this.props.closePopout}
 					/>
 				</View>
-				<View id="profile" activePanel={this.state.activeStory}>
-					<Profile id="profile" changeActiveStory={this.changeActiveStory}/>
+				<View id="profile" activePanel={this.props.testStore.activeStory}>
+					<Profile id="profile" changeActiveStory={this.props.changeActiveStory}/>
 				</View>
 			</Epic>
 		);
 	}
 }
 
-export default App;
+const mapStateToProps = state => {
+	return {
+		testStore: state
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	(dispatch) => ({
+		changeActiveStory: (e) => {
+			dispatch({ type: "CHANGE_STORY", payload: e.currentTarget.dataset.story });
+		},
+		changeActivePanel: (e) => {
+			dispatch({ type: "CHANGE_PANEL", payload: e.currentTarget.dataset.to })
+		},
+		selectCell: (model) => {
+			dispatch({ type: "CLICK_CELL", payload: model})
+		},
+		setPopout: (alert) => {
+			dispatch({ type: "RETURN_AND_SHOW_POPOUT", payload: alert})
+		},
+		closePopout: () => {
+			dispatch({ type: "CLOSE_POPOUT" })
+		},
+		changeMode: (mode) => {
+			dispatch({ type: "CHANGE_MODE",  payload: mode})
+		}
+	})
+)(App);

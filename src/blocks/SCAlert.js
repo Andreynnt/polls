@@ -1,7 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Alert } from '@vkontakte/vkui';
-import SCGiftIcon from "./SCGiftIcon";
+import SCGiftIcon from "./icons/SCGiftIcon";
 
 
 class SCAlert extends React.Component {
@@ -23,9 +22,5 @@ class SCAlert extends React.Component {
         );
     }
 }
-
-SCAlert.propTypes = {
-
-};
 
 export default SCAlert;

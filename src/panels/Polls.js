@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel, Group, PanelHeader, Cell, PanelHeaderContent, HeaderContext, List } from '@vkontakte/vkui';
 import SCList from "../blocks/SCList";
-import Icon16Dropdown from '@vkontakte/icons/dist/16/done';
+import Icon16Dropdown from '@vkontakte/icons/dist/16/dropdown';
 import Icon24Done from '@vkontakte/icons/dist/24/done';
 import Icon16Fire from '@vkontakte/icons/dist/16/fire';
 import Icon16CheckCircleOutline from '@vkontakte/icons/dist/16/check_circle_outline';
@@ -13,12 +13,11 @@ export default class Polls extends React.Component {
         super(props);
         this.state = {
             contextOpened: false,
-            mode: 'new'
+            mode: props.mode
         };
     }
 
     render() {
-        //todo когда возвращаемся с опроса на главный, чтобы то что нужно ыбло открыто
         let cells = this.props.pollModels.map((item, i) => {
                 if ((item.passed && this.state.mode === 'passed') || ((!item.passed && this.state.mode === 'new'))) {
                     return <Cell key={i}
@@ -75,6 +74,7 @@ export default class Polls extends React.Component {
     select = (e) => {
         const mode = e.currentTarget.dataset.mode;
         this.setState({ mode });
+        this.props.changeMode(mode);
         requestAnimationFrame(this.toggleContext);
     };
 }
