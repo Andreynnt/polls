@@ -1,9 +1,10 @@
 import React from 'react';
 import { Alert } from '@vkontakte/vkui';
 import SCGiftIcon from "./icons/SCGiftIcon";
+import connect from "react-redux/es/connect/connect";
 
 
-class SCAlert extends React.Component {
+export class SCAlert extends React.Component {
     render() {
         return (
             <Alert
@@ -23,4 +24,12 @@ class SCAlert extends React.Component {
     }
 }
 
-export default SCAlert;
+const mapDispatchToProps = dispatch => {
+    return {
+        closePopout: () => {
+            dispatch({ type: "CLOSE_POPOUT" })
+        }
+    }
+};
+
+export default connect(null, mapDispatchToProps)(SCAlert);

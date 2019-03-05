@@ -6,20 +6,20 @@ import Icon16Dropdown from '@vkontakte/icons/dist/16/dropdown';
 import Icon24Done from '@vkontakte/icons/dist/24/done';
 import Icon16Fire from '@vkontakte/icons/dist/16/fire';
 import Icon16CheckCircleOutline from '@vkontakte/icons/dist/16/check_circle_outline';
+import connect from "react-redux/es/connect/connect";
 
 
-export default class Polls extends React.Component {
+export class Polls extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            contextOpened: false,
-            mode: props.mode
+            contextOpened: false
         };
     }
 
     render() {
-        let cells = this.props.pollModels.map((item, i) => {
-                if ((item.passed && this.state.mode === 'passed') || ((!item.passed && this.state.mode === 'new'))) {
+        let cells = this.props.models.pollModels.map((item, i) => {
+                if ((item.passed && this.props.navigation.pollsMode === 'passed') || ((!item.passed && this.props.navigation.pollsMode === 'new'))) {
                     return <Cell key={i}
                                  description={item.author}
                                  onClick={() => this.props.selectCell(item)}
@@ -28,10 +28,11 @@ export default class Polls extends React.Component {
                         {item.name}
                     </Cell>
                 }
+                return null
             }
         );
 
-        const title = this.state.mode === 'new' ? "Новые" : "Пройденные";
+        const title = this.props.navigation.pollsMode === 'new' ? "Новые" : "Пройденные";
 
         return (
             <Panel id={this.props.id}>
@@ -44,7 +45,7 @@ export default class Polls extends React.Component {
                     <List>
                         <Cell
                             before={<Icon16Fire />}
-                            asideContent={this.state.mode === 'new' ? <Icon24Done fill="var(--accent)" /> : null}
+                            asideContent={this.props.navigation.pollsMode === 'new' ? <Icon24Done fill="var(--accent)" /> : null}
                             onClick={this.select}
                             data-mode="new"
                         >
@@ -52,7 +53,7 @@ export default class Polls extends React.Component {
                         </Cell>
                         <Cell
                             before={<Icon16CheckCircleOutline />}
-                            asideContent={this.state.mode === 'passed' ? <Icon24Done fill="var(--accent)" /> : null}
+                            asideContent={this.props.navigation.pollsMode === 'passed' ? <Icon24Done fill="var(--accent)" /> : null}
                             onClick={this.select}
                             data-mode="passed"
                         >
@@ -73,7 +74,6 @@ export default class Polls extends React.Component {
 
     select = (e) => {
         const mode = e.currentTarget.dataset.mode;
-        this.setState({ mode });
         this.props.changeMode(mode);
         requestAnimationFrame(this.toggleContext);
     };
@@ -81,6 +81,25 @@ export default class Polls extends React.Component {
 
 Polls.propTypes = {
     id: PropTypes.string.isRequired,
-    changeActiveStory: PropTypes.func.isRequired,
-    selectCell: PropTypes.func.isRequired,
+    selectCell: PropTypes.func.isRequired
 };
+
+const mapStateToProps = state => {
+    return {
+        navigation: state.navigation,
+        models: state.models
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        selectCell: (model) => {
+            dispatch({ type: "CLICK_CELL", payload: model})
+        },
+        changeMode: (mode) => {
+            dispatch({ type: "CHANGE_MODE",  payload: mode})
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Polls);

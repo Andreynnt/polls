@@ -6,12 +6,13 @@ import Icon24Back from '@vkontakte/icons/dist/24/back';
 import SCAnswers from "../blocks/SCAnswers";
 import SCQuestion from "../blocks/SCQuestion";
 import SCAlert from "../blocks/SCAlert";
+import connect from "react-redux/es/connect/connect";
 
 const osname = platform();
 
-export default class Poll extends React.Component {
+export class Poll extends React.Component {
     render() {
-        const questionAndAnswers = this.props.model.polls.map((item, i) =>
+        const questionAndAnswers = this.props.navigation.selectedPoll.polls.map((item, i) =>
                 <Group key={i}>
                     <SCQuestion question={item.question} num={i}/>
                     <FormLayout>
@@ -26,13 +27,13 @@ export default class Poll extends React.Component {
                                                  data-to="polls">
                                         {osname === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
                                   </HeaderButton>}>
-                    {this.props.model.author}
+                    {this.props.navigation.selectedPoll.author}
                 </PanelHeader>
 
                 {questionAndAnswers}
 
                 <Div style={{background: "#ebedf0"}}>
-                    <Button onClick={() => this.props.showPopout(<SCAlert closePopout={this.props.closePopout}/>)}
+                    <Button onClick={() => this.props.showPopout(<SCAlert/>)}
                             size="xl"
                             data-to="polls">
                         Отправить
@@ -45,9 +46,25 @@ export default class Poll extends React.Component {
 
 Poll.propTypes = {
     id: PropTypes.string.isRequired,
-    changeActiveStory: PropTypes.func.isRequired,
     changeActivePanel: PropTypes.func.isRequired,
-    showPopout: PropTypes.func.isRequired,
-    closePopout: PropTypes.func.isRequired,
-    model: PropTypes.PropTypes.object,
+    selectedPoll: PropTypes.PropTypes.object
 };
+
+const mapStateToProps = state => {
+    return {
+        navigation: state.navigation
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        showPopout: (alert) => {
+            dispatch({ type: "RETURN_AND_SHOW_POPOUT", payload: alert})
+        },
+        changeActivePanel: (e) => {
+            dispatch({ type: "CHANGE_PANEL", payload: e.currentTarget.dataset.to })
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Poll);
