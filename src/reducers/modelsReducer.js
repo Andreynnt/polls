@@ -6,11 +6,18 @@ const initModels = () => {
     let pollModels = polls.map(poll => new PollModel(poll));
 
     return {
-        pollModels: pollModels,
+        pollModels: pollModels
     };
 };
 
 export default function modelsReducer(state = initModels(), action) {
-    console.log("modelsReducer():   ", state);
+    if (action.type === "USER_ANSWERED") {
+        let updatedModels = state.pollModels;
+        updatedModels[action.pollNum].currentQuestionNum++;
+        return {
+            ...state,
+            pollModels: updatedModels
+        }
+    }
     return state;
 }

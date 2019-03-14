@@ -12,14 +12,22 @@ const osname = platform();
 
 export class Poll extends React.Component {
     render() {
-        const questionAndAnswers = this.props.navigation.selectedPoll.polls.map((item, i) =>
-                <Group key={i}>
-                    <SCQuestion question={item.question} num={i}/>
-                    <FormLayout>
-                        <SCAnswers answers={item.answers}/>
-                    </FormLayout>
-                </Group>
+        const questionNum  = this.props.navigation.selectedPoll.currentQuestionNum;
+        const questionWithAnswers = this.props.navigation.selectedPoll.polls[questionNum];
+        const questionAndAnswers = (
+            <Group>
+                <SCQuestion question={questionWithAnswers.question} num={questionNum}/>
+                <FormLayout>
+                    <SCAnswers answers={questionWithAnswers.answers}/>
+                </FormLayout>
+             </Group>
         );
+
+        let action = () => this.props.answerQuestion(this.props.navigation.selectedPollNum);
+        if (questionNum === this.props.navigation.selectedPoll.polls.length - 1) {
+            action = () => { this.props.showPopout(<SCAlert/>) }
+        }
+
 
         return (
             <Panel id={this.props.id}>
@@ -33,10 +41,10 @@ export class Poll extends React.Component {
                 {questionAndAnswers}
 
                 <Div style={{background: "#ebedf0"}}>
-                    <Button onClick={() => this.props.showPopout(<SCAlert/>)}
+                    <Button onClick={action}
                             size="xl"
                             data-to="polls">
-                        Отправить
+                        Ответить
                     </Button>
                 </Div>
             </Panel>
@@ -52,7 +60,8 @@ Poll.propTypes = {
 
 const mapStateToProps = state => {
     return {
-        navigation: state.navigation
+        navigation: state.navigation,
+        models: state.models
     };
 };
 
@@ -63,6 +72,9 @@ const mapDispatchToProps = dispatch => {
         },
         changeActivePanel: (e) => {
             dispatch({ type: "CHANGE_PANEL", payload: e.currentTarget.dataset.to })
+        },
+        answerQuestion: (pollNum) => {
+            dispatch({ type: "USER_ANSWERED", pollNum: pollNum })
         }
     }
 };

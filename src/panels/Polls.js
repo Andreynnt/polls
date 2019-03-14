@@ -22,7 +22,7 @@ export class Polls extends React.Component {
                 if ((item.passed && this.props.navigation.pollsMode === 'passed') || ((!item.passed && this.props.navigation.pollsMode === 'new'))) {
                     return <Cell key={i}
                                  description={item.author}
-                                 onClick={() => this.props.selectCell(item)}
+                                 onClick={() => this.props.selectCell(item, i)}
                                  data-to="poll"
                                  expandable>
                         {item.name}
@@ -93,8 +93,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        selectCell: (model) => {
-            dispatch({ type: "CLICK_CELL", payload: model})
+        selectCell: (model, i) => {
+            dispatch({ type: "CLICK_CELL", payload: {model, i}})
         },
         changeMode: (mode) => {
             dispatch({ type: "CHANGE_MODE",  payload: mode})

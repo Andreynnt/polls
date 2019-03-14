@@ -54,14 +54,14 @@ export default class HttpService {
                   ]
                 },
                 { "id":"myPollId1",
-                  "question":"кто лучше?",
+                  "question":"Выберете самого плохого артиста",
                   "type":"radio",
                   "answers": 
-                  [
-                      "Олег Газманов",
-                      "Филипп Киркоров",
+                  [    
                       "Алла Пугачева",
-                      "Lil pump"
+                      "Lil pump",
+                      "Олег Газманов",
+                      "Филипп Киркоров"
                   ]
                 }
               ]

@@ -3,6 +3,7 @@ const initApp = () => {
         activePanel: 'polls',
         activeStory: 'polls',
         selectedPoll: null,
+        selectedPollNum: null,
         alert: null,
         pollsMode: 'new'
     };
@@ -23,7 +24,8 @@ export default function navigationReducer(state = initApp(), action) {
         return {
             ...state,
             activePanel: "poll",
-            selectedPoll: action.payload
+            selectedPoll: action.payload.model,
+            selectedPollNum: action.payload.i
         }
     } else if (action.type === "RETURN_AND_SHOW_POPOUT") {
         return {

@@ -8,6 +8,7 @@ export default class PollModel {
         this.author = data.author;
         this.polls = data.polls;
         this.passed = data.passed;
+        this.currentQuestionNum = 0
     }
 }
 
@@ -22,7 +23,8 @@ PollModel.propTypes = {
         question: PropTypes.string.isRequired,
         answers: PropTypes.array.isRequired,
         type: PropTypes.string.isRequired
-    })).isRequired
+    })).isRequired,
+    currentQuestionNum: PropTypes.number
 };
 
 PollModel.defaultProps = {
