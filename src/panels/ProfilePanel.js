@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Panel, Group, PanelHeader, Cell } from '@vkontakte/vkui';
 
 
-export default class Profile extends React.Component {
+export default class ProfilePanel extends React.Component {
     render() {
         return (
             <Panel id={this.props.id}>
@@ -16,6 +16,6 @@ export default class Profile extends React.Component {
     }
 }
 
-Profile.propTypes = {
+ProfilePanel.propTypes = {
     id: PropTypes.string.isRequired
 };

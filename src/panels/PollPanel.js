@@ -10,7 +10,7 @@ import connect from "react-redux/es/connect/connect";
 
 const osname = platform();
 
-export class Poll extends React.Component {
+export class PollPanel extends React.Component {
     render() {
         const questionNum  = this.props.navigation.selectedPoll.currentQuestionNum;
         const questionWithAnswers = this.props.navigation.selectedPoll.polls[questionNum];
@@ -52,7 +52,7 @@ export class Poll extends React.Component {
     }
 }
 
-Poll.propTypes = {
+PollPanel.propTypes = {
     id: PropTypes.string.isRequired,
     changeActivePanel: PropTypes.func.isRequired,
     selectedPoll: PropTypes.PropTypes.object
@@ -79,4 +79,4 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Poll);
+export default connect(mapStateToProps, mapDispatchToProps)(PollPanel);

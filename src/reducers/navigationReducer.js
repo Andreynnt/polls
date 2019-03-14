@@ -1,7 +1,7 @@
 const initApp = () => {
     return {
-        activePanel: 'polls',
-        activeStory: 'polls',
+        activePanel: 'preloader',
+        activeStory: 'preloader',
         selectedPoll: null,
         selectedPollNum: null,
         alert: null,
@@ -11,6 +11,9 @@ const initApp = () => {
 
 export default function navigationReducer(state = initApp(), action) {
     if (action.type === "CHANGE_STORY") {
+        if (state.activePanel === "preloader") {
+            return state
+        }
         return {
             ...state,
             activeStory: action.payload
@@ -42,6 +45,12 @@ export default function navigationReducer(state = initApp(), action) {
         return {
             ...state,
             pollsMode: action.payload
+        }
+    } else if (action.type === "CLOSE_MAIN_PRELOADER_AND_OPEN_APP") {
+        return {
+            ...state,
+            activePanel: "polls",
+            activeStory: "polls"
         }
     }
     console.log("navigationReducer():   ", state);

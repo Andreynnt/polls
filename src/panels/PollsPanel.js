@@ -9,7 +9,7 @@ import Icon16CheckCircleOutline from '@vkontakte/icons/dist/16/check_circle_outl
 import connect from "react-redux/es/connect/connect";
 
 
-export class Polls extends React.Component {
+export class PollsPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -79,7 +79,7 @@ export class Polls extends React.Component {
     };
 }
 
-Polls.propTypes = {
+PollsPanel.propTypes = {
     id: PropTypes.string.isRequired,
     selectCell: PropTypes.func.isRequired
 };
@@ -102,4 +102,4 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Polls);
+export default connect(mapStateToProps, mapDispatchToProps)(PollsPanel);

@@ -1,12 +1,6 @@
-import HttpService from "../services/HttpService";
-import PollModel from "../models/PollModel";
-
 const initModels = () => {
-    const polls = HttpService.parseDefaultJson();
-    let pollModels = polls.map(poll => new PollModel(poll));
-
     return {
-        pollModels: pollModels
+        pollModels: null
     };
 };
 
@@ -18,6 +12,12 @@ export default function modelsReducer(state = initModels(), action) {
             ...state,
             pollModels: updatedModels
         }
+    } else if (action.type === "GET_POLLS_FROM_BACKEND") {
+        return {
+            ...state,
+            pollModels: action.pollModels
+        }
     }
+    console.log("modelsReducer():   ", state);
     return state;
 }
