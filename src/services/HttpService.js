@@ -23,7 +23,7 @@ export default class HttpService {
                 callback(HttpService.dataToPollModels(data))
             })
             .catch(error => {
-                callback(error);
+                callback(null, error);
             })
     }
 
