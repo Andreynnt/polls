@@ -52,6 +52,9 @@ export default function navigationReducer(state = initApp(), action) {
             activePanel: "polls",
             activeStory: "polls"
         }
+    } else if (action.type === "GOT_ERROR_FROM_BACKEND") {
+        //todo показывать error panel
+       return state;
     }
     console.log("navigationReducer():   ", state);
     return state;

@@ -1,4 +1,8 @@
 export default class HttpService {
+    static getUrl() {
+        return "http://johnylemming.ru/api/getpolls";
+    }
+
     static parseJson(data) {
         let response = null;
         try {
@@ -7,6 +11,46 @@ export default class HttpService {
             console.log("Parse JSON error: ", e.toString());
         }
         return response
+    }
+
+    static getPolls(callback) {
+        return fetch(HttpService.getUrl())
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                console.log(data);
+                callback(HttpService.dataToPollModels(data))
+            })
+            .catch(error => {
+                callback(error);
+            })
+    }
+
+    static dataToPollModels(data) {
+        if (!data) {
+            return {};
+        }
+
+        const result = data.map((poll, i) => {
+            let convertedPoll = {};
+            convertedPoll.id = poll.id || "0";
+            convertedPoll.name = poll.name || "No name";
+            convertedPoll.description = poll.description || "No description";
+            convertedPoll.passed = poll.status || "No status";
+            convertedPoll.polls = [];
+            convertedPoll.currentQuestionNum = 0;
+            if (poll.questions) {
+                convertedPoll.polls = poll.questions.map(item => {
+                    let convertedItem = {};
+                    convertedItem.question = item.name;
+                    convertedItem.answers = item.answers;
+                    return convertedItem;
+                });
+            }
+            return convertedPoll;
+        });
+        return result;
     }
 
     static parseDefaultJson() {
