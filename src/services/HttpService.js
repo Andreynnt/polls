@@ -1,6 +1,6 @@
 export default class HttpService {
     static getUrl() {
-        return "http://johnylemming.ru/api/getpolls";
+        return "https://johnylemming.ru/api/getpolls";
     }
 
     static parseJson(data) {
