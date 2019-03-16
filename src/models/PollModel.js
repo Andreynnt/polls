@@ -7,8 +7,9 @@ export default class PollModel {
         this.description = data.description;
         this.author = data.author;
         this.polls = data.polls;
-        this.passed = data.passed;
-        this.currentQuestionNum = 0
+        this.status = data.status;
+        this.currentQuestionNum = 0;
+        this.answers = [];
     }
 }
 
@@ -17,7 +18,7 @@ PollModel.propTypes = {
     name: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     author: PropTypes.string.isRequired,
-    passed: PropTypes.bool.isRequired,
+    status: PropTypes.string.isRequired,
     polls: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.number.isRequired,
         question: PropTypes.string.isRequired,
@@ -30,5 +31,6 @@ PollModel.propTypes = {
 PollModel.defaultProps = {
     name: '',
     description: '',
-    author: ''
+    author: '',
+    answers: []
 };

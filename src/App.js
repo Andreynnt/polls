@@ -19,7 +19,7 @@ class App extends React.Component {
 			const polls = HttpService.parseDefaultJson();
 			let pollModels = polls.map(poll => new PollModel(poll));
 			this.props.gotPollModels(pollModels);
-			setTimeout(() => {this.props.closeMainPreloader();}, 1000);
+			setTimeout(() => {this.props.closeMainPreloader();}, 0);
 		};
 
 		const setWebModels = () => {

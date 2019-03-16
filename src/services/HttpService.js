@@ -1,6 +1,6 @@
 export default class HttpService {
     static getUrl() {
-        return "https://johnylemming.ru/api/getpolls";
+        return "https://johnylemming.ru/api";
     }
 
     static parseJson(data) {
@@ -14,7 +14,7 @@ export default class HttpService {
     }
 
     static getPolls(callback) {
-        return fetch(HttpService.getUrl())
+        return fetch(HttpService.getUrl() + '/getpolls')
             .then(response => {
                 return response.json()
             })
@@ -27,6 +27,20 @@ export default class HttpService {
             })
     }
 
+    static sendAnswers(answers) {
+        console.log(JSON.stringify(answers));
+        fetch(HttpService.getUrl() + '/postanswers', {
+            headers: {
+                "Content-Type": "application/json"
+            },
+            method: 'post',
+            body: JSON.stringify(answers)
+        }).then(function(response) {
+            console.log(response);
+            return response;
+        })
+    }
+
     static dataToPollModels(data) {
         if (!data) {
             return {};
@@ -37,9 +51,10 @@ export default class HttpService {
             convertedPoll.id = poll.id || "0";
             convertedPoll.name = poll.name || "No name";
             convertedPoll.description = poll.description || "No description";
-            convertedPoll.passed = poll.status || "No status";
+            convertedPoll.status = poll.status || "No status";
             convertedPoll.polls = [];
             convertedPoll.currentQuestionNum = 0;
+            convertedPoll.answers = [];
             if (poll.questions) {
                 convertedPoll.polls = poll.questions.map(item => {
                     let convertedItem = {};
@@ -61,7 +76,7 @@ export default class HttpService {
               "name": "Выбор лучшей песни",
               "description": "Выбираем лучшую песню 2019 года.",
               "author": "Олег Газманов",
-              "passed": true,
+              "status": "running",
               "polls": 
               [
                 { "id":"myPollId1",
@@ -115,7 +130,7 @@ export default class HttpService {
               "name": "Человек года по версии GQ",
               "description": "Хаски или Баста? Мальбек или гуф?",
               "author": "GQ",
-              "passed": false,
+              "status": "done",
               "polls": 
               [
                 { "id":"myPollId1",

@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, Group, PanelHeader, Button, HeaderButton, platform, IOS, FormLayout, Div} from '@vkontakte/vkui';
+import { Panel, Group, PanelHeader, Button, HeaderButton, platform, IOS, FormLayout, Div, Radio} from '@vkontakte/vkui';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
-import SCAnswers from "../blocks/SCAnswers";
+
 import SCQuestion from "../blocks/SCQuestion";
 import SCAlert from "../blocks/SCAlert";
 import connect from "react-redux/es/connect/connect";
@@ -11,23 +11,35 @@ import connect from "react-redux/es/connect/connect";
 const osname = platform();
 
 export class PollPanel extends React.Component {
+    constructor(props) {
+        super(props);
+        this.answer = 0;
+    }
+
     render() {
-        const questionNum  = this.props.navigation.selectedPoll.currentQuestionNum;
+        const questionNum = this.props.navigation.selectedPoll.currentQuestionNum;
         const questionWithAnswers = this.props.navigation.selectedPoll.polls[questionNum];
+
+        const answers = questionWithAnswers.answers.map((text, i) =>
+                <Radio onClick={() => this.clickRadio(i)} name="radio" key={i} value={i}>{text}</Radio>
+        );
+
         const questionAndAnswers = (
             <Group>
                 <SCQuestion question={questionWithAnswers.question} num={questionNum}/>
                 <FormLayout>
-                    <SCAnswers answers={questionWithAnswers.answers}/>
+                    {answers}
                 </FormLayout>
-             </Group>
+            </Group>
         );
 
-        let action = () => this.props.answerQuestion(this.props.navigation.selectedPollNum);
+        let action = () => this.props.answerQuestion(this.props.navigation.selectedPollNum, this.answer);
         if (questionNum === this.props.navigation.selectedPoll.polls.length - 1) {
-            action = () => { this.props.showPopout(<SCAlert/>) }
+            action = () => {
+                this.props.sendAnswers(this.props.navigation.selectedPollNum, this.answer);
+                this.props.showPopout(<SCAlert/>);
+            }
         }
-
 
         return (
             <Panel id={this.props.id}>
@@ -49,6 +61,10 @@ export class PollPanel extends React.Component {
                 </Div>
             </Panel>
         );
+    }
+
+    clickRadio = (i) => {
+        this.answer = i;
     }
 }
 
@@ -73,8 +89,11 @@ const mapDispatchToProps = dispatch => {
         changeActivePanel: (e) => {
             dispatch({ type: "CHANGE_PANEL", payload: e.currentTarget.dataset.to })
         },
-        answerQuestion: (pollNum) => {
-            dispatch({ type: "USER_ANSWERED", pollNum: pollNum })
+        answerQuestion: (pollNum, answer) => {
+            dispatch({ type: "USER_ANSWERED", pollNum: pollNum, answer: answer})
+        },
+        sendAnswers: (pollNum, lastAnswer) => {
+            dispatch({ type: "SEND_ANSWERS", pollNum: pollNum, lastAnswer: lastAnswer})
         }
     }
 };

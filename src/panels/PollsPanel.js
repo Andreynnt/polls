@@ -13,13 +13,19 @@ export class PollsPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            contextOpened: false
+            contextOpened: false,
+            statuses: {
+                'STATUS_CREATED': 'created',
+                'STATUS_READY': 'ready',
+                'STATUS_RUNNING': 'running',
+                'STATUS_DONE': 'done',
+            }
         };
     }
 
     render() {
         let cells = this.props.models.pollModels.map((item, i) => {
-                if ((item.passed && this.props.navigation.pollsMode === 'passed') || ((!item.passed && this.props.navigation.pollsMode === 'new'))) {
+                if (((item.status === this.state.statuses['STATUS_DONE']) && this.props.navigation.pollsMode === 'passed') || (((item.status === this.state.statuses['STATUS_RUNNING']) && this.props.navigation.pollsMode === 'new'))) {
                     return <Cell key={i}
                                  description={item.author}
                                  onClick={() => this.props.selectCell(item, i)}
