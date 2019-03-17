@@ -41,11 +41,37 @@ class App extends React.Component {
 					return;
 				}
 
-				console.log("GOOD, models: ", models);
+				console.log("setWebModels() success: ", models);
 				this.props.gotPollModels(models);
 				this.props.closeMainPreloader();
 			});
 		};
+
+		//todo профисификацию
+
+		// HttpService.getUser()
+		// 	.then(user => {
+		// 		if (user === null) {
+		// 			console.log("getUser(), user === null");
+		// 			name = "1";
+		// 			return;
+		// 		}
+		// 		name = "2";
+		// 		this.props.gotUserInfo(user);
+		// 	})
+		// 	.catch(error => {
+		// 		name = "3";
+		// 		console.error('getUser() error: ', error);
+		// 	});
+
+		HttpService.getUser2(({user, error}) => {
+			if (error) {
+				console.error(error);
+			} else {
+				console.log(user);
+				this.props.gotUserInfo(user)
+			}
+		});
 
 		if (AppService.shared().mode === appModes.prod) {
 			setWebModels();
@@ -69,7 +95,7 @@ class App extends React.Component {
 				</View>
 
 				<View id="profile" activePanel={this.props.navigation.activeStory}>
-					<ProfilePanel id="profile"/>
+					<ProfilePanel user={this.props.user.user} id="profile"/>
 				</View>
 			</Epic>
 		);
@@ -79,7 +105,8 @@ class App extends React.Component {
 const mapStateToProps = state => {
 	return {
 		navigation: state.navigation,
-		models: state.models
+		models: state.models,
+		user: state.user
 	};
 };
 
@@ -93,6 +120,9 @@ const mapDispatchToProps = dispatch => {
 		},
 		closeMainPreloader: () => {
 			dispatch({ type: "CLOSE_MAIN_PRELOADER_AND_OPEN_APP"});
+		},
+		gotUserInfo: (user) => {
+			dispatch({ type: "GOT_USER_INFO", user: user})
 		}
 	}
 };

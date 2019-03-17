@@ -1,5 +1,6 @@
 import {appModes} from "../App";
 import * as AppService from "./AppService";
+import connect from '@vkontakte/vkui-connect';
 
 export default class HttpService {
     static getUrl() {
@@ -74,6 +75,35 @@ export default class HttpService {
         });
         return result;
     }
+
+    static getUser() {
+        return new Promise((resolve, reject) => {
+            connect.subscribe((e) => {
+                switch (e.detail.type) {
+                    case 'VKWebAppGetUserInfoResult':
+                        resolve(e.detail.data);
+                        break;
+                    default:
+                        reject(e.detail.type);
+                }
+            });
+            connect.send('VKWebAppGetUserInfo', {});
+        });
+    }
+
+    static getUser2(callback) {
+        connect.subscribe((e) => {
+            switch (e.detail.type) {
+                case 'VKWebAppGetUserInfoResult':
+                    callback({user: e.detail.data, error: null});
+                    break;
+                default:
+                    callback({user: null, error: e.detail.type});
+            }
+        });
+        connect.send('VKWebAppGetUserInfo', {});
+    }
+
 
     static parseDefaultJson() {
         const pollsJSON= `
