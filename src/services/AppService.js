@@ -7,7 +7,7 @@ class AppService {
         if (window.location.hostname === 'localhost') {
             return "../../img/";
         }
-        return "polls/img/"
+        return "/img/"
     }
 }
 
