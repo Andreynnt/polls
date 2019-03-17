@@ -26,7 +26,7 @@ export class PollPanel extends React.Component {
 
         const questionAndAnswers = (
             <Group>
-                <SCQuestion question={questionWithAnswers.question} num={questionNum}/>
+                <SCQuestion question={questionWithAnswers.question} num={questionNum} questionsAmount={this.props.navigation.selectedPoll.polls.length}/>
                 <FormLayout>
                     {answers}
                 </FormLayout>

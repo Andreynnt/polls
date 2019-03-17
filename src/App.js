@@ -9,11 +9,20 @@ import connect from "react-redux/es/connect/connect";
 import PreloaderPanel from "./panels/PreloaderPanel";
 import HttpService from "./services/HttpService";
 import PollModel from "./models/PollModel";
+import * as AppService from "./services/AppService";
+
+export const appModes = {
+	debug: 'debug',
+	prod: 'prod'
+};
+
+const mode = appModes.debug;
 
 
 class App extends React.Component {
 	constructor(props) {
 		super(props);
+		AppService.shared().mode = mode;
 
 		const setDefaultModels = () => {
 			const polls = HttpService.parseDefaultJson();
@@ -38,8 +47,11 @@ class App extends React.Component {
 			});
 		};
 
-		//setDefaultModels();
-		setWebModels();
+		if (AppService.shared().mode === appModes.prod) {
+			setWebModels();
+		} else if (AppService.shared().mode === appModes.debug) {
+			setDefaultModels();
+		}
 	}
 
 

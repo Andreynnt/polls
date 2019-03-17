@@ -5,7 +5,10 @@ import { Header } from '@vkontakte/vkui';
 class SCQuestion extends React.Component {
     render() {
         return (
-            <Header>{this.props.num + 1}. {this.props.question}</Header>
+            <div>
+                <Header level="2">Вопрос {this.props.num + 1}/{this.props.questionsAmount + 1}</Header>
+                <Header>{this.props.question}</Header>
+            </div>
         );
     }
 }

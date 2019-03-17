@@ -1,3 +1,6 @@
+import {appModes} from "../App";
+import * as AppService from "./AppService";
+
 export default class HttpService {
     static getUrl() {
         return "https://johnylemming.ru/api";
@@ -28,6 +31,10 @@ export default class HttpService {
     }
 
     static sendAnswers(answers) {
+        if (AppService.shared().mode === appModes.debug) {
+            return;
+        }
+
         console.log(JSON.stringify(answers));
         fetch(HttpService.getUrl() + '/postanswers', {
             headers: {
