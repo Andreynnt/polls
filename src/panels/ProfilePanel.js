@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel, Group, PanelHeader, Cell, Avatar } from '@vkontakte/vkui';
 import SCCoin from "../blocks/SCCoin";
+import * as AppService from "../services/AppService";
 
 
 export default class ProfilePanel extends React.Component {
@@ -10,7 +11,7 @@ export default class ProfilePanel extends React.Component {
             <Panel id={this.props.id}>
                 <PanelHeader>Профиль</PanelHeader>
                 <Group title="Достижения">
-                    <Cell before={<Avatar src="../../img/icons8-money-bag-100.png"
+                    <Cell before={<Avatar src= {AppService.shared().pathToImages() + "icons8-money-bag-100.png"}
                                           style={{ background: 'var(--control_tint)' }}
                                           size={56}/>}
                           asideContent={<SCCoin quantity={121}/>}
