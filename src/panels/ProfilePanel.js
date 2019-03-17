@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, Group, PanelHeader, Cell } from '@vkontakte/vkui';
+import { Panel, Group, PanelHeader, Cell, Avatar } from '@vkontakte/vkui';
+import SCCoin from "../blocks/SCCoin";
 
 
 export default class ProfilePanel extends React.Component {
@@ -8,8 +9,12 @@ export default class ProfilePanel extends React.Component {
         return (
             <Panel id={this.props.id}>
                 <PanelHeader>Профиль</PanelHeader>
-                <Group title="Твой профиль">
-                    <Cell>Пока тут ничего нет</Cell>
+                <Group title="Достижения">
+                    <Cell before={<Avatar src="../../img/icons8-money-bag-100.png"
+                                          style={{ background: 'var(--control_tint)' }}
+                                          size={56}/>}
+                          asideContent={<SCCoin quantity={121}/>}
+                          description="Их можно менять на деньги">Ваши монеты</Cell>
                 </Group>
             </Panel>
         );
