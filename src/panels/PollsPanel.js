@@ -7,6 +7,7 @@ import Icon24Done from '@vkontakte/icons/dist/24/done';
 import Icon16Fire from '@vkontakte/icons/dist/16/fire';
 import Icon16CheckCircleOutline from '@vkontakte/icons/dist/16/check_circle_outline';
 import connect from "react-redux/es/connect/connect";
+import SCCell from "../blocks/SCCell";
 
 
 export class PollsPanel extends React.Component {
@@ -24,19 +25,40 @@ export class PollsPanel extends React.Component {
     }
 
     render() {
-        let cells = this.props.models.pollModels.map((item, i) => {
-                if (((item.status === this.state.statuses['STATUS_DONE']) && this.props.navigation.pollsMode === 'passed') || (((item.status === this.state.statuses['STATUS_RUNNING']) && this.props.navigation.pollsMode === 'new'))) {
-                    return <Cell key={i}
-                                 description={item.author}
-                                 onClick={() => this.props.selectCell(item, i)}
-                                 data-to="poll"
-                                 expandable>
-                        {item.name}
-                    </Cell>
-                }
+
+        let polls = this.props.models.pollModels.map((item, i) => {
+            if (!(((item.status === this.state.statuses['STATUS_DONE']) && this.props.navigation.pollsMode === 'passed') || (((item.status === this.state.statuses['STATUS_RUNNING']) && this.props.navigation.pollsMode === 'new')))) {
                 return null
             }
-        );
+            return {
+                author: item.author,
+                action: () => this.props.selectCell(item, i),
+                dataTo:"poll",
+                name: item.name
+            };
+        });
+
+        let filteredPolls = polls.filter(item => item !== null);
+
+        let lastPoll = null;
+        if ((filteredPolls.length % 2) === 1) {
+            lastPoll = filteredPolls.pop();
+        }
+
+        let cells = [];
+        let cellKey = 0;
+        for (let i = 0; i < filteredPolls.length - 1; i += 2) {
+            cells.push(
+                <SCCell key={cellKey} blocks={[filteredPolls[i], filteredPolls[i + 1]]}/>
+            );
+            cellKey++;
+        }
+
+        if (lastPoll != null) {
+            cells.push(
+                <SCCell key={cellKey} blocks={[lastPoll]}/>
+            )
+        }
 
         const title = this.props.navigation.pollsMode === 'new' ? "Новые" : "Пройденные";
 

@@ -11,6 +11,7 @@ import HttpService from "./services/HttpService";
 import PollModel from "./models/PollModel";
 import * as AppService from "./services/AppService";
 
+
 export const appModes = {
 	debug: 'debug',
 	prod: 'prod'
@@ -47,34 +48,28 @@ class App extends React.Component {
 			});
 		};
 
-		//todo профисификацию
+		const getUser = () => {
+			HttpService.getAuthToken(({data, error}) => {
+				if (error) {
+					console.error('getAuthToken(): error:', error);
+				} else {
+					const token = data ? data.access_token : "noToken";
 
-		// HttpService.getUser()
-		// 	.then(user => {
-		// 		if (user === null) {
-		// 			console.log("getUser(), user === null");
-		// 			name = "1";
-		// 			return;
-		// 		}
-		// 		name = "2";
-		// 		this.props.gotUserInfo(user);
-		// 	})
-		// 	.catch(error => {
-		// 		name = "3";
-		// 		console.error('getUser() error: ', error);
-		// 	});
-
-		HttpService.getUser2(({user, error}) => {
-			if (error) {
-				console.error(error);
-			} else {
-				console.log(user);
-				this.props.gotUserInfo(user)
-			}
-		});
+					HttpService.getInfo(token, (error2, response) => {
+						if (error2) {
+							console.error(error2.toString());
+							this.props.gotUserInfo({first_name: error2.message}, error2.message)
+						} else {
+							this.props.gotUserInfo({first_name: JSON.stringify(response)});
+						}
+					});
+				}
+			});
+		};
 
 		if (AppService.shared().mode === appModes.prod) {
 			setWebModels();
+			getUser();
 		} else if (AppService.shared().mode === appModes.debug) {
 			setDefaultModels();
 		}
@@ -95,7 +90,7 @@ class App extends React.Component {
 				</View>
 
 				<View id="profile" activePanel={this.props.navigation.activeStory}>
-					<ProfilePanel user={this.props.user.user} id="profile"/>
+					<ProfilePanel user={this.props.user.user} logs={this.props.user.logs} id="profile"/>
 				</View>
 			</Epic>
 		);
@@ -121,8 +116,11 @@ const mapDispatchToProps = dispatch => {
 		closeMainPreloader: () => {
 			dispatch({ type: "CLOSE_MAIN_PRELOADER_AND_OPEN_APP"});
 		},
-		gotUserInfo: (user) => {
-			dispatch({ type: "GOT_USER_INFO", user: user})
+		gotUserInfo: (user, logs) => {
+			dispatch({ type: "GOT_USER_INFO", user: user, logs:logs})
+		},
+		gotUserToken: (accessToken) => {
+			dispatch({ type: "GOT_USER_TOKEN", accessToken: accessToken})
 		}
 	}
 };

@@ -18,6 +18,7 @@ export default class ProfilePanel extends React.Component {
                                           size={56}/>}
                           asideContent={<SCCoin quantity={121}/>}
                           description="Их можно менять на деньги">Ваши монеты</Cell>
+                    <Cell multiline>{this.props.user.first_name}</Cell>
                 </Group>
             </Panel>
         );
