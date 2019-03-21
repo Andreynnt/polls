@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, Group, PanelHeader, Button, HeaderButton, platform, IOS, FormLayout, Div, Radio} from '@vkontakte/vkui';
+import { Panel, Group, PanelHeader, Button, HeaderButton, platform, IOS, FormLayout, Div, Radio, Input, Cell} from '@vkontakte/vkui';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
 
@@ -10,22 +10,60 @@ import connect from "react-redux/es/connect/connect";
 import * as ReactDOM from "react-dom";
 
 const osname = platform();
+const defaultAnswer = "Asasa2211+A-+Aa_12±!@#";
 
 export class PollPanel extends React.Component {
     constructor(props) {
         super(props);
-        this.answer = 0;
+        this.answer = defaultAnswer;
         this.isAnswered = false;
+        this.onChange = this.onChange.bind(this);
+        this.onChangeWithRemoveRadio = this.onChangeWithRemoveRadio.bind(this);
+    }
+
+    renderAnswers(questionWithAnswers) {
+
+        let answers = [];
+
+        if (questionWithAnswers.type === "one") {
+
+            const radios = questionWithAnswers.answers.map((text, i) => {
+                    return <Radio onClick={() => this.clickRadio(i)} name="radio" key={i} value={i}>{text}</Radio>
+                }
+            );
+
+            const input = questionWithAnswers.other === "true" ? <Input onChange={this.onChangeWithRemoveRadio} placeholder="Ваш ответ" /> : null;
+            return <div>
+                {radios}
+                {input}
+            </div>
+
+        } else if (questionWithAnswers.type === "multi") {
+
+            const radios = questionWithAnswers.answers.map((text, i) => {
+                return <Cell onClick={() => this.clickSelectableCell(i)} name="radio" key={i} value={i} selectable>{text}</Cell>
+                }
+            );
+            const input = questionWithAnswers.other === "true" ? <Input onChange={this.onChangeWithRemoveRadio} className={"myInputForClear"} placeholder="Ваш ответ" /> : null;
+            return <div>
+                {radios}
+                {input}
+            </div>
+
+        } else if (questionWithAnswers.type === "open") {
+            answers = <Input className={"myInputForClear"} onChange={this.onChange} top="Ваш ответ" />
+        }
+
+        return answers
     }
 
     render() {
 
         const questionNum = this.props.navigation.selectedPoll.currentQuestionNum;
         const questionWithAnswers = this.props.navigation.selectedPoll.polls[questionNum];
+        const answers = this.renderAnswers(questionWithAnswers);
 
-        const answers = questionWithAnswers.answers.map((text, i) =>
-                <Radio onClick={() => this.clickRadio(i)} name="radio" key={i} value={i}>{text}</Radio>
-        );
+        console.dir(questionWithAnswers);
 
         const questionAndAnswers = (
             <Group>
@@ -59,7 +97,9 @@ export class PollPanel extends React.Component {
                     <Button onClick={() => {
                                  if (this.isAnswered) {
                                      action();
+                                     this.answer = defaultAnswer;
                                      this.removeRadioChecked();
+                                     this.removeInput();
                                      this.isAnswered = false;
                                  }
                             }}
@@ -79,10 +119,44 @@ export class PollPanel extends React.Component {
         });
     }
 
+    removeInput() {
+        const inputCollection = ReactDOM.findDOMNode(this._ref).getElementsByClassName('Input__el');
+        [].slice.call(inputCollection).forEach(input => {
+            input.value = "";
+        });
+    }
+
     clickRadio = (i) => {
         this.answer = i;
         this.isAnswered = true;
+    };
+
+    onChange(e) {
+        this.answer = e.currentTarget.value;
+        this.isAnswered = true;
+    };
+
+    onChangeWithRemoveRadio(e) {
+        this.removeRadioChecked();
+        this.onChange(e);
+        this.isAnswered = true;
     }
+
+    clickSelectableCell = (i) => {
+        if (this.answer === defaultAnswer) {
+            this.answer = [];
+            this.answer.push(i);
+        } else {
+            const index = this.answer.indexOf(i);
+            if (index > -1) {
+                this.answer.splice(index, 1);
+            } else {
+                this.answer.push(i);
+            }
+        }
+        this.isAnswered = true;
+    }
+
 }
 
 PollPanel.propTypes = {

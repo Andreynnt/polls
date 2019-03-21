@@ -56,6 +56,6 @@ export default function navigationReducer(state = initApp(), action) {
         //todo показывать error panel
        return state;
     }
-    console.log("navigationReducer():   ", state);
+    //console.log("navigationReducer():   ", state);
     return state;
 }

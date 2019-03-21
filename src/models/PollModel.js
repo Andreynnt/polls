@@ -19,12 +19,7 @@ PollModel.propTypes = {
     description: PropTypes.string.isRequired,
     author: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
-    polls: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        question: PropTypes.string.isRequired,
-        answers: PropTypes.array.isRequired,
-        type: PropTypes.string.isRequired
-    })).isRequired,
+    polls: PropTypes.object.isRequired,
     currentQuestionNum: PropTypes.number
 };
 

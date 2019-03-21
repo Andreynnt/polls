@@ -17,7 +17,7 @@ export const appModes = {
 	prod: 'prod'
 };
 
-const mode = appModes.debug;
+const mode = appModes.prod;
 
 
 class App extends React.Component {

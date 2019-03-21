@@ -1,6 +1,7 @@
 import {appModes} from "../App";
 import * as AppService from "./AppService";
 import connect from '@vkontakte/vkui-connect';
+import QuestionModel from "../models/QuestionModel";
 //import VKConnect from '@vkontakte/vkui-connect-mock';
 
 
@@ -42,11 +43,10 @@ export default class HttpService {
     }
 
     static sendAnswers(answers) {
+        console.log('answers: ', JSON.stringify(answers));
         if (AppService.shared().mode === appModes.debug) {
             return;
         }
-
-        console.log(JSON.stringify(answers));
         fetch(HttpService.getUrl() + '/postanswers', {
             headers: {
                 "Content-Type": "application/json"
@@ -76,10 +76,7 @@ export default class HttpService {
             convertedPoll.author = poll.author || "Anonymous";
             if (poll.questions) {
                 convertedPoll.polls = poll.questions.map(item => {
-                    let convertedItem = {};
-                    convertedItem.question = item.name;
-                    convertedItem.answers = item.answers;
-                    return convertedItem;
+                    return new QuestionModel(item);
                 });
             }
             return convertedPoll;
@@ -146,29 +143,24 @@ export default class HttpService {
               [
                 { "id":"myPollId1",
                   "question":"кто лучше?",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [
                       "Олег Газманов",
                       "Филипп Киркоров",
                       "Алла Пугачева",
                       "Lil pump"
-                  ]
+                  ],
+                  "other":"true"
+        
                 },
                 { "id":"myPollId2",
-                  "question":"а тут кто лучше?",
-                  "type":"radio",
-                  "answers": 
-                  [
-                    "Иван Дорн",
-                    "Иван Ургант",
-                    "Алла Михеева",
-                    "Гаррет Бейл"
-                  ]
+                  "question":"Напишите имя лучшего",
+                  "type":"open"
                 },
                 { "id":"myPollId1",
                   "question":"кто лучше?",
-                  "type":"radio",
+                  "type":"multi",
                   "answers": 
                   [
                       "Олег Газманов",
@@ -179,7 +171,7 @@ export default class HttpService {
                 },
                 { "id":"myPollId1",
                   "question":"Выберете самого плохого артиста",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [    
                       "Алла Пугачева",
@@ -200,7 +192,7 @@ export default class HttpService {
               [
                 { "id":"myPollId1",
                   "question":"кто лучше?",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [
                       "Олег Газманов",
@@ -211,7 +203,7 @@ export default class HttpService {
                 },
                 { "id":"myPollId2",
                   "question":"а тут кто лучше?",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [
                     "Иван Дорн",
@@ -222,7 +214,7 @@ export default class HttpService {
                 },
                 { "id":"myPollId1",
                   "question":"кто лучше?",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [
                       "Олег Газманов",
@@ -233,7 +225,7 @@ export default class HttpService {
                 },
                 { "id":"myPollId1",
                   "question":"Выберете самого плохого артиста",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [    
                       "Алла Пугачева",
@@ -254,7 +246,7 @@ export default class HttpService {
               [
                 { "id":"myPollId1",
                   "question":"кто лучше?",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [
                       "Олег Газманов",
@@ -265,7 +257,7 @@ export default class HttpService {
                 },
                 { "id":"myPollId2",
                   "question":"а тут кто лучше?",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [
                     "Иван Дорн",
@@ -276,7 +268,7 @@ export default class HttpService {
                 },
                 { "id":"myPollId1",
                   "question":"кто лучше?",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [
                       "Олег Газманов",
@@ -287,7 +279,7 @@ export default class HttpService {
                 },
                 { "id":"myPollId1",
                   "question":"Выберете самого плохого артиста",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [    
                       "Алла Пугачева",
@@ -308,7 +300,7 @@ export default class HttpService {
               [
                 { "id":"myPollId1",
                   "question":"кто лучше?",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [
                       "Олег Газманов",
@@ -319,7 +311,7 @@ export default class HttpService {
                 },
                 { "id":"myPollId2",
                   "question":"а тут кто лучше?",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [
                     "Иван Дорн",
@@ -330,7 +322,7 @@ export default class HttpService {
                 },
                 { "id":"myPollId1",
                   "question":"кто лучше?",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [
                       "Олег Газманов",
@@ -341,7 +333,7 @@ export default class HttpService {
                 },
                 { "id":"myPollId1",
                   "question":"Выберете самого плохого артиста",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [    
                       "Алла Пугачева",
@@ -362,7 +354,7 @@ export default class HttpService {
               [
                 { "id":"myPollId1",
                   "question":"кто лучше?",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [
                       "Олег Газманов",
@@ -373,7 +365,7 @@ export default class HttpService {
                 },
                 { "id":"myPollId2",
                   "question":"а тут кто лучше?",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [
                     "Иван Дорн",
@@ -384,7 +376,7 @@ export default class HttpService {
                 },
                 { "id":"myPollId1",
                   "question":"кто лучше?",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [
                       "Олег Газманов",
@@ -416,25 +408,27 @@ export default class HttpService {
               [
                 { "id":"myPollId1",
                   "question":"Выберете лучшего",
-                  "type":"radio",
+                  "type":"multi",
                   "answers": 
                   [
                       "Хаски",
                       "Баста",
                       "Мальбек",
                       "Гуф"
-                  ]
+                  ],
+                  "other":"true"
                 },
                 { "id":"myPollId1",
                   "question":"Кто хуже всех?",
-                  "type":"radio",
+                  "type":"one",
                   "answers": 
                   [
                     "Олег Газманов",
                     "Филипп Киркоров",
                     "Алла Пугачева",
                     "Lil pump"
-                  ]
+                  ],
+                    "other":"true"
                 }
               ]
             }
