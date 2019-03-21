@@ -8,7 +8,7 @@ import Icon16Fire from '@vkontakte/icons/dist/16/fire';
 import Icon16CheckCircleOutline from '@vkontakte/icons/dist/16/check_circle_outline';
 import connect from "react-redux/es/connect/connect";
 import SCCell from "../blocks/SCCell";
-
+import '../css/separatorForGroup.css';
 
 export class PollsPanel extends React.Component {
     constructor(props) {
@@ -55,9 +55,7 @@ export class PollsPanel extends React.Component {
         }
 
         if (lastPoll != null) {
-            cells.push(
-                <SCCell key={cellKey} blocks={[lastPoll]}/>
-            )
+            cells.push(<SCCell key={cellKey} blocks={[lastPoll]}/>)
         }
 
         const title = this.props.navigation.pollsMode === 'new' ? "Новые" : "Пройденные";

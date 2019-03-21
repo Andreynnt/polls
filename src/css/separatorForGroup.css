@@ -1,0 +1,10 @@
+.Group--ios::before,
+.Group--ios::after {
+    position: absolute;
+    right: 0;
+    left: 0;
+    z-index: 1;
+    height: 0;
+    content: '';
+    background: var(--separator_common);
+}

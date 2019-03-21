@@ -2,14 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Cell } from '@vkontakte/vkui';
 import SCBlockPoll from "./SCBlockPoll";
-
+import '../css/separatorForCell.css';
 
 class SCCell extends React.Component {
     render() {
 
         const cellStyle = {
-            height: "200px",
-            background: "var(--background_page)"
+            background: "var(--background_page)",
         };
 
         const twoBLocksStyle= {

@@ -246,8 +246,8 @@ export default class HttpService {
             {
               "id": "myId1",
               "name": "Выбор лучшей песни3",
-              "description": "Выбираем лучшую песню 2019 года.",
-              "author": "Олег Газманов",
+              "description": "Выбираем лучшую песню 2019 года",
+              "author": "Олег Газманов, или кто-то еще другой.",
               "status": "running",
               "polls": 
               [
@@ -299,7 +299,61 @@ export default class HttpService {
             },
              {
               "id": "myId1",
-              "name": "Выбор лучшей песни4",
+              "name": "Выбор лучшей песни4eweeeewew",
+              "description": "Выбираем лучшую песню 2019 года.",
+              "author": "Олег Газманов",
+              "status": "running",
+              "polls": 
+              [
+                { "id":"myPollId1",
+                  "question":"кто лучше?",
+                  "type":"radio",
+                  "answers": 
+                  [
+                      "Олег Газманов",
+                      "Филипп Киркоров",
+                      "Алла Пугачева",
+                      "Lil pump"
+                  ]
+                },
+                { "id":"myPollId2",
+                  "question":"а тут кто лучше?",
+                  "type":"radio",
+                  "answers": 
+                  [
+                    "Иван Дорн",
+                    "Иван Ургант",
+                    "Алла Михеева",
+                    "Гаррет Бейл"
+                  ]
+                },
+                { "id":"myPollId1",
+                  "question":"кто лучше?",
+                  "type":"radio",
+                  "answers": 
+                  [
+                      "Олег Газманов",
+                      "Филипп Киркоров",
+                      "Алла Пугачева",
+                      "Lil pump"
+                  ]
+                },
+                { "id":"myPollId1",
+                  "question":"Выберете самого плохого артиста",
+                  "type":"radio",
+                  "answers": 
+                  [    
+                      "Алла Пугачева",
+                      "Lil pump",
+                      "Олег Газманов",
+                      "Филипп Киркоров"
+                  ]
+                }
+              ]
+            },
+                         {
+              "id": "myId1",
+              "name": "Выбор лучшей песни4eweeeewew",
               "description": "Выбираем лучшую песню 2019 года.",
               "author": "Олег Газманов",
               "status": "running",
