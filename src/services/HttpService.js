@@ -73,6 +73,7 @@ export default class HttpService {
             convertedPoll.polls = [];
             convertedPoll.currentQuestionNum = 0;
             convertedPoll.answers = [];
+            convertedPoll.author = poll.author || "Anonymous";
             if (poll.questions) {
                 convertedPoll.polls = poll.questions.map(item => {
                     let convertedItem = {};

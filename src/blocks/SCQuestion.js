@@ -6,7 +6,7 @@ class SCQuestion extends React.Component {
     render() {
         return (
             <div>
-                <Header level="2">Вопрос {this.props.num + 1}/{this.props.questionsAmount + 1}</Header>
+                <Header level="2">Вопрос {this.props.num + 1}/{this.props.questionsAmount}</Header>
                 <Header>{this.props.question}</Header>
             </div>
         );

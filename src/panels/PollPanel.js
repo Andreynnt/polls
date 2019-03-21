@@ -7,6 +7,7 @@ import Icon24Back from '@vkontakte/icons/dist/24/back';
 import SCQuestion from "../blocks/SCQuestion";
 import SCAlert from "../blocks/SCAlert";
 import connect from "react-redux/es/connect/connect";
+import * as ReactDOM from "react-dom";
 
 const osname = platform();
 
@@ -14,9 +15,11 @@ export class PollPanel extends React.Component {
     constructor(props) {
         super(props);
         this.answer = 0;
+        this.isAnswered = false;
     }
 
     render() {
+
         const questionNum = this.props.navigation.selectedPoll.currentQuestionNum;
         const questionWithAnswers = this.props.navigation.selectedPoll.polls[questionNum];
 
@@ -42,10 +45,10 @@ export class PollPanel extends React.Component {
         }
 
         return (
-            <Panel id={this.props.id}>
+            <Panel id={this.props.id} ref={node => this._ref = node}>
                 <PanelHeader left={<HeaderButton onClick={this.props.changeActivePanel}
                                                  data-to="polls">
-                                        {osname === IOS ? <Icon28ChevronBack /> : <Icon24Back />}
+                                        {osname === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
                                   </HeaderButton>}>
                     {this.props.navigation.selectedPoll.author}
                 </PanelHeader>
@@ -53,7 +56,13 @@ export class PollPanel extends React.Component {
                 {questionAndAnswers}
 
                 <Div style={{background: "#ebedf0"}}>
-                    <Button onClick={action}
+                    <Button onClick={() => {
+                                 if (this.isAnswered) {
+                                     action();
+                                     this.removeRadioChecked();
+                                     this.isAnswered = false;
+                                 }
+                            }}
                             size="xl"
                             data-to="polls">
                         Ответить
@@ -63,8 +72,16 @@ export class PollPanel extends React.Component {
         );
     }
 
+    removeRadioChecked() {
+        const radiosCollection = ReactDOM.findDOMNode(this._ref).getElementsByClassName('Radio__input');
+        [].slice.call(radiosCollection).forEach(radio => {
+            radio.checked = false;
+        });
+    }
+
     clickRadio = (i) => {
         this.answer = i;
+        this.isAnswered = true;
     }
 }
 
