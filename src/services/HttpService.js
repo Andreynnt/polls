@@ -99,7 +99,6 @@ export default class HttpService {
 
     static getInfo(token, callback) {
         connect.subscribe((e) => {
-            callback(null, e);
             switch (e.detail.type) {
                 case 'VKWebAppCallAPIMethodResult':
                     callback(null, e.detail.data);

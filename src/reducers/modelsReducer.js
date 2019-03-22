@@ -28,7 +28,7 @@ export default function modelsReducer(state = initModels(), action) {
         let result = {
             answers: state.pollModels[action.pollNum].answers,
             poll_id: state.pollModels[action.pollNum].id,
-            resp_id: 0
+            resp_id: action.userId
         };
 
         HttpService.sendAnswers(result);

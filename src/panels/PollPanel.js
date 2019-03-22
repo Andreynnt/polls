@@ -18,12 +18,12 @@ export class PollPanel extends React.Component {
         this.answer = defaultAnswer;
         this.isAnswered = false;
         this.onChange = this.onChange.bind(this);
+        this.onChangeOpen = this.onChange.bind(this);
         this.onChangeWithRemoveRadio = this.onChangeWithRemoveRadio.bind(this);
         this.state = {needError: false}
     }
 
     renderAnswers(questionWithAnswers) {
-
         let answers = [];
 
         if (questionWithAnswers.type === "one") {
@@ -52,7 +52,7 @@ export class PollPanel extends React.Component {
             </div>
 
         } else if (questionWithAnswers.type === "open") {
-            answers = <Input className={"myInputForClear"} onChange={this.onChange} top="Ваш ответ" />
+            answers = <Input top="Ваш ответ" className={"myInputForClear"} onChange={this.onChangeOpen}/>
         }
 
         return answers
@@ -63,9 +63,6 @@ export class PollPanel extends React.Component {
         const questionNum = this.props.navigation.selectedPoll.currentQuestionNum;
         const questionWithAnswers = this.props.navigation.selectedPoll.polls[questionNum];
         const answers = this.renderAnswers(questionWithAnswers);
-
-        console.dir(questionWithAnswers);
-
         const errorBlock = this.state.needError ? <FormStatus state="error">Необходимо ответить на вопрос</FormStatus> : null;
 
         const questionAndAnswers = (
@@ -81,7 +78,12 @@ export class PollPanel extends React.Component {
         let action = () => this.props.answerQuestion(this.props.navigation.selectedPollNum, this.answer);
         if (questionNum === this.props.navigation.selectedPoll.polls.length - 1) {
             action = () => {
-                this.props.sendAnswers(this.props.navigation.selectedPollNum, this.answer);
+                let userId = 0;
+                if (this.props.user && this.props.user.user) {
+                    userId = this.props.user.user.id ? this.props.user.user.id : 0;
+                }
+                this.props.plusOneCoinToUser();
+                this.props.sendAnswers(this.props.navigation.selectedPollNum, this.answer, userId);
                 this.props.showPopout(<SCAlert/>);
             }
         }
@@ -149,6 +151,11 @@ export class PollPanel extends React.Component {
         this.isAnswered = true;
     };
 
+    onChangeOpen(e) {
+        this.answer = e.currentTarget.value;
+        this.isAnswered = true;
+    }
+
     onChangeWithRemoveRadio(e) {
         this.removeRadioChecked();
         this.onChange(e);
@@ -175,7 +182,7 @@ export class PollPanel extends React.Component {
 PollPanel.propTypes = {
     id: PropTypes.string.isRequired,
     changeActivePanel: PropTypes.func.isRequired,
-    selectedPoll: PropTypes.PropTypes.object
+    selectedPoll: PropTypes.PropTypes.object,
 };
 
 const mapStateToProps = state => {
@@ -191,14 +198,17 @@ const mapDispatchToProps = dispatch => {
         showPopout: (alert) => {
             dispatch({ type: "RETURN_AND_SHOW_POPOUT", payload: alert})
         },
+        plusOneCoinToUser: () => {
+            dispatch({ type: "PLUS_ONE_COIN" })
+        },
         changeActivePanel: (e) => {
             dispatch({ type: "CHANGE_PANEL", payload: e.currentTarget.dataset.to })
         },
         answerQuestion: (pollNum, answer) => {
             dispatch({ type: "USER_ANSWERED", pollNum: pollNum, answer: answer})
         },
-        sendAnswers: (pollNum, lastAnswer) => {
-            dispatch({ type: "SEND_ANSWERS", pollNum: pollNum, lastAnswer: lastAnswer})
+        sendAnswers: (pollNum, lastAnswer, userId) => {
+            dispatch({ type: "SEND_ANSWERS", pollNum: pollNum, lastAnswer: lastAnswer, userId:userId})
         }
     }
 };

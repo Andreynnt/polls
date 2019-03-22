@@ -48,33 +48,37 @@ class App extends React.Component {
 			});
 		};
 
-		const getUser = () => {
-			HttpService.getAuthToken(({data, error}) => {
-				if (error) {
-					console.error('getAuthToken(): error:', error);
-				} else {
-					const token = data ? data.access_token : "noToken";
-
-					HttpService.getInfo(token, (error2, response) => {
-						if (error2) {
-							console.error(error2.toString());
-							this.props.gotUserInfo({first_name: error2.message}, error2.message)
-						} else {
-							this.props.gotUserInfo({first_name:  JSON.stringify(response.response)});
-						}
-					});
-				}
-			});
-		};
-
 		if (AppService.shared().mode === appModes.prod) {
 			setWebModels();
-			getUser();
+			//this.getUser();
 		} else if (AppService.shared().mode === appModes.debug) {
 			setDefaultModels();
 		}
 	}
 
+	componentWillMount() {
+		this.getUser();
+	}
+
+	getUser = () => {
+		HttpService.getAuthToken(({data, error}) => {
+			if (error) {
+				console.error('getAuthToken(): error:', error);
+			} else {
+				const token = data ? data.access_token : "noToken";
+
+				HttpService.getInfo(token, (error2, response) => {
+					if (error2) {
+						console.error(error2.toString());
+						//эта херня ломает профиль и закрытие
+						//this.props.gotUserInfo({first_name: error2.message})
+					} else {
+						this.props.gotUserInfo(response.response[0]);
+					}
+				});
+			}
+		});
+	};
 
 	render() {
 		const preparedTabbar = (<SCTabbar/>);
@@ -90,7 +94,7 @@ class App extends React.Component {
 				</View>
 
 				<View id="profile" activePanel={this.props.navigation.activeStory}>
-					<ProfilePanel user={this.props.user.user} logs={this.props.user.logs} id="profile"/>
+					<ProfilePanel user={this.props.user.user} id="profile"/>
 				</View>
 			</Epic>
 		);
@@ -116,8 +120,8 @@ const mapDispatchToProps = dispatch => {
 		closeMainPreloader: () => {
 			dispatch({ type: "CLOSE_MAIN_PRELOADER_AND_OPEN_APP"});
 		},
-		gotUserInfo: (user, logs) => {
-			dispatch({ type: "GOT_USER_INFO", user: user, logs:logs})
+		gotUserInfo: (user) => {
+			dispatch({ type: "GOT_USER_INFO", user: user})
 		},
 		gotUserToken: (accessToken) => {
 			dispatch({ type: "GOT_USER_TOKEN", accessToken: accessToken})

@@ -32,7 +32,7 @@ export class PollsPanel extends React.Component {
             }
             return {
                 author: item.author,
-                action: () => this.props.selectCell(item, i),
+                action: () => item.status === this.state.statuses['STATUS_RUNNING'] ? this.props.selectCell(item, i) : null,
                 dataTo:"poll",
                 name: item.name
             };

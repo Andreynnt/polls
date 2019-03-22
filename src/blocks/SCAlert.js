@@ -2,6 +2,7 @@ import React from 'react';
 import { Alert } from '@vkontakte/vkui';
 import SCGiftIcon from "./icons/SCGiftIcon";
 import connect from "react-redux/es/connect/connect";
+import SCCoin from "../blocks/SCCoin";
 
 
 export class SCAlert extends React.Component {
@@ -18,7 +19,7 @@ export class SCAlert extends React.Component {
             >
                 <h2>Опрос пройден!</h2>
                 <SCGiftIcon/>
-                <p>Скоро вам будут начислены баллы.</p>
+                <p>Вам начислена одна монета!</p>
             </Alert>
         );
     }
