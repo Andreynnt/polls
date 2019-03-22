@@ -23,6 +23,7 @@ export default function modelsReducer(state = initModels(), action) {
     } else if (action.type === "SEND_ANSWERS") {
         state.pollModels[action.pollNum].answers.push(action.lastAnswer);
         console.log(state.pollModels[action.pollNum].answers);
+        state.pollModels[action.pollNum].status = "done";
 
         let result = {
             answers: state.pollModels[action.pollNum].answers,
