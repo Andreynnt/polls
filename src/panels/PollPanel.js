@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, Group, PanelHeader, Button, HeaderButton, platform, IOS, FormLayout, Div, Radio, Input, Cell} from '@vkontakte/vkui';
+import { Panel, Group, PanelHeader, Button, HeaderButton, platform, IOS, FormLayout, Div, Radio, Input, Cell, FormStatus} from '@vkontakte/vkui';
 import Icon28ChevronBack from '@vkontakte/icons/dist/28/chevron_back';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
 
@@ -19,6 +19,7 @@ export class PollPanel extends React.Component {
         this.isAnswered = false;
         this.onChange = this.onChange.bind(this);
         this.onChangeWithRemoveRadio = this.onChangeWithRemoveRadio.bind(this);
+        this.state = {needError: false}
     }
 
     renderAnswers(questionWithAnswers) {
@@ -65,11 +66,14 @@ export class PollPanel extends React.Component {
 
         console.dir(questionWithAnswers);
 
+        const errorBlock = this.state.needError ? <FormStatus state="error">Необходимо ответить на вопрос</FormStatus> : null;
+
         const questionAndAnswers = (
             <Group>
                 <SCQuestion question={questionWithAnswers.question} num={questionNum} questionsAmount={this.props.navigation.selectedPoll.polls.length}/>
                 <FormLayout>
                     {answers}
+                    {errorBlock}
                 </FormLayout>
             </Group>
         );
@@ -101,6 +105,15 @@ export class PollPanel extends React.Component {
                                      this.removeRadioChecked();
                                      this.removeInput();
                                      this.isAnswered = false;
+                                     this.setState({
+                                         ...this.state,
+                                         needError: false
+                                     })
+                                 } else {
+                                     this.setState({
+                                         ...this.state,
+                                         needError: true
+                                     })
                                  }
                             }}
                             size="xl"
@@ -132,7 +145,7 @@ export class PollPanel extends React.Component {
     };
 
     onChange(e) {
-        this.answer = e.currentTarget.value;
+        this.answer = "other: " + e.currentTarget.value;
         this.isAnswered = true;
     };
 
@@ -168,7 +181,8 @@ PollPanel.propTypes = {
 const mapStateToProps = state => {
     return {
         navigation: state.navigation,
-        models: state.models
+        models: state.models,
+        user: state.user
     };
 };
 

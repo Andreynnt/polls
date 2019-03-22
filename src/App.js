@@ -60,7 +60,7 @@ class App extends React.Component {
 							console.error(error2.toString());
 							this.props.gotUserInfo({first_name: error2.message}, error2.message)
 						} else {
-							this.props.gotUserInfo({first_name: JSON.stringify(response)});
+							this.props.gotUserInfo({first_name:  JSON.stringify(response.response)});
 						}
 					});
 				}
