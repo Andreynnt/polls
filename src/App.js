@@ -10,6 +10,7 @@ import PreloaderPanel from "./panels/PreloaderPanel";
 import HttpService from "./services/HttpService";
 import PollModel from "./models/PollModel";
 import * as AppService from "./services/AppService";
+import LeadersPanel from "./panels/LeadersPanel";
 
 
 export const appModes = {
@@ -91,6 +92,10 @@ class App extends React.Component {
 				<View popout={this.props.navigation.alert} id="polls" activePanel={this.props.navigation.activePanel}>
 					<Polls id="polls"/>
 					<Poll id="poll"/>
+				</View>
+
+				<View id="leaders" activePanel={this.props.navigation.activeStory}>
+					<LeadersPanel id="leaders"/>
 				</View>
 
 				<View id="profile" activePanel={this.props.navigation.activeStory}>

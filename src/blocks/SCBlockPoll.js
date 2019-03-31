@@ -1,18 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Ratio from "react-ratio";
 import * as AppService from "../services/AppService";
+
 
 class SCBlockPoll extends React.Component {
     render() {
 
-        const width = "45vw";
+        const width = "47vw";
         const borderRadius = '12px 12px 0px 0px';
+        //width * 2 + (margin * 3) = 100
+        const rightMargin = this.props.position === 0 ? "1vw" : "2vw";
+        const leftMargin = this.props.position === 0 ? "2vw" : "1vw";
 
         const divStyle = {
-            height: "32vh",
             width: width,
-            marginRight: "5px",
-            marginLeft: "3px",
+            marginRight: rightMargin,
+            marginLeft: leftMargin,
             borderRadius: "12px",
             backgroundColor: "white"
         };
@@ -20,7 +24,7 @@ class SCBlockPoll extends React.Component {
         const imageStyle = {
             backgroundColor: "#fff5cc",
             borderRadius: borderRadius,
-            height: "23vh",
+            height: "70%",
             width: width,
             display: "flex",
             alignItems: "center",
@@ -49,15 +53,26 @@ class SCBlockPoll extends React.Component {
             fontSize: "20px"
         };
 
+        const imageWrapper = {
+            height: "70%",
+            borderRadius: borderRadius,
+            backgroundImage: "url(" + AppService.shared().pathToImages() + "pug2.jpg" + ")",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "50% 50%"
+        };
+
         return (
               <div style={divStyle} onClick={() => {this.props.action()}}>
-                  <div style={imageStyle}>
-                      <div style={emptyPhoto}>Нет фото</div>
-                  </div>
-                  <div>
-                     <div style={nameStyle}> {this.props.name}</div>
-                     <div style={authorStyle}> {this.props.author}</div>
-                  </div>
+                  <Ratio ratio={9/10}>
+                      <div style={imageWrapper}>
+
+                      </div>
+                      <div>
+                         <div style={nameStyle}> {this.props.name}</div>
+                         <div style={authorStyle}> {this.props.author}</div>
+                      </div>
+                  </Ratio>
               </div>
         );
     }
@@ -66,7 +81,8 @@ class SCBlockPoll extends React.Component {
 SCBlockPoll.propTypes = {
     name: PropTypes.string.isRequired,
     author: PropTypes.string.isRequired,
-    action: PropTypes.func.isRequired
+    action: PropTypes.func.isRequired,
+    position: PropTypes.number.isRequired
 };
 
 export default SCBlockPoll;

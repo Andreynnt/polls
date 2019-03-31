@@ -4,11 +4,12 @@ import { Panel, Group, PanelHeader, Cell, PanelHeaderContent, HeaderContext, Lis
 import SCList from "../blocks/SCList";
 import Icon16Dropdown from '@vkontakte/icons/dist/16/dropdown';
 import Icon24Done from '@vkontakte/icons/dist/24/done';
-import Icon16Fire from '@vkontakte/icons/dist/16/fire';
-import Icon16CheckCircleOutline from '@vkontakte/icons/dist/16/check_circle_outline';
 import connect from "react-redux/es/connect/connect";
 import SCCell from "../blocks/SCCell";
 import '../css/separatorForGroup.css';
+import '../css/pollsCells.css';
+import Icon24Flash from '@vkontakte/icons/dist/24/flash';
+import Icon24RecentOutline from '@vkontakte/icons/dist/24/recent_outline';
 
 export class PollsPanel extends React.Component {
     constructor(props) {
@@ -70,18 +71,20 @@ export class PollsPanel extends React.Component {
                 <HeaderContext opened={this.state.contextOpened} onClose={this.toggleContext}>
                     <List>
                         <Cell
-                            before={<Icon16Fire />}
+                            before={<Icon24Flash />}
                             asideContent={this.props.navigation.pollsMode === 'new' ? <Icon24Done fill="var(--accent)" /> : null}
                             onClick={this.select}
                             data-mode="new"
+                            style={{padding: "0 12px"}}
                         >
                             Новые
                         </Cell>
                         <Cell
-                            before={<Icon16CheckCircleOutline />}
+                            before={<Icon24RecentOutline />}
                             asideContent={this.props.navigation.pollsMode === 'passed' ? <Icon24Done fill="var(--accent)" /> : null}
                             onClick={this.select}
                             data-mode="passed"
+                            style={{padding: "0 12px"}}
                         >
                             Пройденные
                         </Cell>

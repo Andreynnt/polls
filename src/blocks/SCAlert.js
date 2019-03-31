@@ -2,10 +2,22 @@ import React from 'react';
 import { Alert } from '@vkontakte/vkui';
 import SCGiftIcon from "./icons/SCGiftIcon";
 import connect from "react-redux/es/connect/connect";
-import SCCoin from "../blocks/SCCoin";
 
 
 export class SCAlert extends React.Component {
+    constructor(props) {
+        super(props);
+        this.centerStyle = {
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start"
+        };
+        this.elementCenter = {
+            alignSelf: "center"
+        }
+    }
+
+
     render() {
         return (
             <Alert
@@ -17,9 +29,11 @@ export class SCAlert extends React.Component {
                 }]}
                 onClose={this.props.closePopout}
             >
-                <h2>Опрос пройден!</h2>
-                <SCGiftIcon/>
-                <p>Вам начислена одна монета!</p>
+                <div style={this.centerStyle}>
+                    <h2 style={this.elementCenter}>Опрос пройден!</h2>
+                    <SCGiftIcon/>
+                    <p style={this.elementCenter}>Вам начислена одна монета!</p>
+                </div>
             </Alert>
         );
     }

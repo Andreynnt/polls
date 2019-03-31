@@ -1,0 +1,21 @@
+/* ячейка */
+.Cell--ios .Cell__main {
+    padding: 0 0 0 0;
+}
+.Cell--android.Cell--l .Cell__main {
+    padding: 0 0 0 0;
+}
+
+/* вверх ячейки  */
+.Cell__bottom {
+    margin-top: 8px;
+}
+
+.Cell--ios .Cell__in {
+    padding: 0 0;
+    transition: background-color .15s ease-out, transform .6s var(--ios-easing);
+}
+
+.Cell--android .Cell__in {
+    padding: 0 0;
+}

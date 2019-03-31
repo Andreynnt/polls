@@ -16,7 +16,7 @@ class SCCell extends React.Component {
         };
 
         let blocks = this.props.blocks.map((item, i) => {
-            return <SCBlockPoll name={item.name} author={item.author} action={() => item.action()} key={i}/>
+            return <SCBlockPoll name={item.name} author={item.author} action={() => item.action()} key={i} position={i}/>
         });
 
         return (

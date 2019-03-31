@@ -12,7 +12,8 @@ class SCGiftIcon extends React.Component {
 
         const style = {
             color: "#BDBDBD",
-            marginBottom: "10px"
+            marginBottom: "10px",
+            alignSelf: "center"
         };
 
         return (

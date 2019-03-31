@@ -3,7 +3,8 @@ import { Tabbar, TabbarItem } from '@vkontakte/vkui';
 import Icon28User from '@vkontakte/icons/dist/28/user';
 import Icon28Newsfeed from '@vkontakte/icons/dist/28/newsfeed';
 import connect from "react-redux/es/connect/connect";
-
+import Icon28Users from '@vkontakte/icons/dist/28/users';
+import Icon28Settings from '@vkontakte/icons/dist/28/settings';
 
 export class SCTabbar extends React.Component {
     render() {
@@ -18,10 +19,17 @@ export class SCTabbar extends React.Component {
                 </TabbarItem>
                 <TabbarItem
                     onClick={this.props.changeActiveStory}
+                    selected={this.props.navigation.activeStory === 'leaders'}
+                    data-story="leaders"
+                >
+                    <Icon28Users />
+                </TabbarItem>
+                <TabbarItem
+                    onClick={this.props.changeActiveStory}
                     selected={this.props.navigation.activeStory === 'profile'}
                     data-story="profile"
                 >
-                    <Icon28User />
+                    <Icon28Settings />
                 </TabbarItem>
             </Tabbar>
         );
