@@ -8,6 +8,7 @@ import SCQuestion from "../blocks/SCQuestion";
 import SCAlert from "../blocks/SCAlert";
 import connect from "react-redux/es/connect/connect";
 import * as ReactDOM from "react-dom";
+import SCPollPreview from "../blocks/SCPollPreview";
 
 const osname = platform();
 const defaultAnswer = "Asasa2211+A-+Aa_12±!@#";
@@ -22,7 +23,7 @@ export class PollPanel extends React.Component {
         this.onChangeOpen = this.onChange.bind(this);
         this.onChangeWithRemoveRadio = this.onChangeWithRemoveRadio.bind(this);
         this.onChangeWithRemoveCell = this.onChangeWithRemoveCell.bind(this);
-        this.state = {needError: false}
+        this.state = {needError: false, needPreviewPage: true};
     }
 
     renderAnswers(questionWithAnswers) {
@@ -58,6 +59,26 @@ export class PollPanel extends React.Component {
     }
 
     render() {
+
+        if (this.state.needPreviewPage) {
+            return (
+                <Panel id={this.props.id} ref={node => this._ref = node}>
+                    <PanelHeader left={<HeaderButton onClick={this.props.changeActivePanel}
+                                                     data-to="polls">
+                        {osname === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
+                    </HeaderButton>}>
+                        {"Прохождение теста"}
+                    </PanelHeader>
+
+                    <SCPollPreview model={this.props.navigation.selectedPoll} runTest={() => {
+                        this.setState({
+                            ...this.state,
+                            needPreviewPage: false
+                        })
+                    }}/>
+                </Panel>
+            )
+        }
 
         const questionNum = this.props.navigation.selectedPoll.currentQuestionNum;
         const questionWithAnswers = this.props.navigation.selectedPoll.polls[questionNum];
@@ -95,7 +116,7 @@ export class PollPanel extends React.Component {
                                                  data-to="polls">
                                         {osname === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
                                   </HeaderButton>}>
-                    {this.props.navigation.selectedPoll.author}
+                    {"Прохождение теста"}
                 </PanelHeader>
 
                 {questionAndAnswers}

@@ -1,9 +1,10 @@
 import React from 'react';
 import { Panel } from '@vkontakte/vkui';
 import {Cell, Group, HeaderContext, List, PanelHeader, PanelHeaderContent, Avatar} from '@vkontakte/vkui';
+import connect from "react-redux/es/connect/connect";
 
 
-export default class LeadersPanel extends React.Component {
+export class LeadersPanel extends React.Component {
     constructor(props) {
         super(props);
         this.wrapperStyle = {
@@ -20,19 +21,22 @@ export default class LeadersPanel extends React.Component {
             justifyContent: "center"
         };
 
-        this.avatarUrls = [
-            "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg",
-            "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg",
-            "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg",
-            "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg",
-            "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg",
-            "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg",
-            "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg",
-            "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg",
-            "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg",
-            "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg",
-            "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg"
-        ]
+        // this.avatarUrls = [
+        //     {img: "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg", href: "https://vk.com/andreibabkov"},
+        //     {img: "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg", href: "https://vk.com/andreibabkov"},
+        //     {img: "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg", href: "https://vk.com/andreibabkov"},
+        //     {img: "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg", href: "https://vk.com/andreibabkov"},
+        //     {img: "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg", href: "https://vk.com/andreibabkov"},
+        //     {img: "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg", href: "https://vk.com/andreibabkov"},
+        //     {img: "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg", href: "https://vk.com/andreibabkov"},
+        //     {img: "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg", href: "https://vk.com/andreibabkov"},
+        //     {img: "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg", href: "https://vk.com/andreibabkov"},
+        //     {img: "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg", href: "https://vk.com/andreibabkov"}
+        // ];
+
+        this.avatarUrls = this.props.leaders.leaders.map(item => {
+            return {img: "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg", href: `https://vk.com/id${item.id}`}
+        });
     }
 
     render() {
@@ -62,7 +66,7 @@ export default class LeadersPanel extends React.Component {
                 if (i === groupsAmount && j === lastCellPhotosAmount) {
                     break;
                 }
-                avatars.push(<Avatar src={urls[i * 4 + j]} size={80}/>)
+                avatars.push(<a href={urls[i * 4 + j].href}><Avatar src={urls[i * 4 + j].img} size={80}/></a>)
             }
             cells.push(<Cell>
                             <div style={this.centerWrapperStyle}>
@@ -77,3 +81,12 @@ export default class LeadersPanel extends React.Component {
         return cells;
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        leaders: state.leaders
+    };
+};
+
+
+export default connect(mapStateToProps)(LeadersPanel);

@@ -28,8 +28,21 @@ export default class HttpService {
         return response
     }
 
-    static getPolls(callback) {
-        return fetch(HttpService.getUrl() + '/getpolls')
+    static getPolls(user, callback) {
+
+        let bdate = "0", city = "0", sex = "0", id = "0", photo_100 = "0", first_name="0", last_name="0";
+
+        if (user) {
+            bdate = user.bdate ? user.bdate : "0";
+            city = user.city ? user.city.title : "0";
+            sex = user.sex ? user.sex : "0";
+            id = user.id ? user.id : "0";
+            photo_100 = user.photo_100 ? user.photo_100 : "0";
+            first_name = user.photo_100 ? user.first_name : "0";
+            last_name = user.last_name ? user.last_name : "0";
+        }
+
+        return fetch(HttpService.getUrl() + `/getpolls?bdate=${bdate}&city=${city}&sex=${sex}&id=${id}&photo_100=${photo_100}&first_name=${first_name}&last_name=${last_name}`)
             .then(response => {
                 return response.json()
             })
@@ -127,6 +140,47 @@ export default class HttpService {
             console.log(response);
             return response;
         })
+    }
+
+    static getLeaders(callback) {
+        return fetch(HttpService.getUrl() + `/getleaders`)
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                console.log(data);
+                callback(HttpService.dataToLeadersModels(data))
+            })
+            .catch(error => {
+                callback(null, error);
+            })
+    }
+
+    static dataToLeadersModels(data) {
+        if (!data) {
+            return {};
+        }
+
+        return data.map(leader => {
+            let convertedLeader = {};
+            convertedLeader.id = leader.id || "0";
+            convertedLeader.balance = leader.balance || 0;
+            return convertedLeader;
+        });
+    }
+
+    static getProfile(id, callback) {
+        return fetch(HttpService.getUrl() + `/getprofile/${id}`)
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                console.log(data);
+                callback(data)
+            })
+            .catch(error => {
+                callback(null, error);
+            })
     }
 
     static parseDefaultJson() {

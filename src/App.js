@@ -33,33 +33,56 @@ class App extends React.Component {
 			setTimeout(() => {this.props.closeMainPreloader();}, 0);
 		};
 
-		const setWebModels = () => {
-			HttpService.getPolls((models, error) => {
-
-				if (error) {
-					console.log("error", error);
-					//todo показывать error panel
-					this.props.gotError(error);
-					return;
-				}
-
-				console.log("setWebModels() success: ", models);
-				this.props.gotPollModels(models);
-				this.props.closeMainPreloader();
-			});
-		};
-
 		if (AppService.shared().mode === appModes.prod) {
-			setWebModels();
-			//this.getUser();
+			this.getUser();
 		} else if (AppService.shared().mode === appModes.debug) {
 			setDefaultModels();
+			this.setLeaders();
 		}
 	}
 
-	componentWillMount() {
-		this.getUser();
-	}
+	setWebModels = (user) => {
+		HttpService.getPolls(user, (models, error) => {
+			if (error) {
+				console.log("error", error);
+				//todo показывать error panel
+				this.props.gotError(error);
+				return;
+			}
+			console.log("setWebModels() success: ", models);
+			this.props.gotPollModels(models);
+			this.props.closeMainPreloader();
+		});
+	};
+
+	setLeaders = () => {
+		HttpService.getLeaders((models, error) => {
+			if (error) {
+				console.log("error", error);
+				//todo показывать error panel
+				this.props.gotError(error);
+				return;
+			}
+			console.log("setLeaders() success: ", models);
+			this.props.gotLeaders(models);
+			if (AppService.shared().mode === appModes.debug) {
+				this.props.closeMainPreloader();
+			}
+		});
+	};
+
+	getProfile = (id) => {
+		HttpService.getProfile(id, (user, error) => {
+			if (error) {
+				console.log("error", error);
+				//todo показывать error panel
+				this.props.gotError(error);
+				return;
+			}
+			console.log("getProfile() success: ", user);
+			this.props.gotProfileInfoFromBackend(user);
+		});
+	};
 
 	getUser = () => {
 		HttpService.getAuthToken(({data, error}) => {
@@ -75,6 +98,9 @@ class App extends React.Component {
 						//this.props.gotUserInfo({first_name: error2.message})
 					} else {
 						this.props.gotUserInfo(response.response[0]);
+						this.getProfile(response.response[0].id);
+						this.setWebModels(this.props.user.user);
+						this.setLeaders();
 					}
 				});
 			}
@@ -110,7 +136,8 @@ const mapStateToProps = state => {
 	return {
 		navigation: state.navigation,
 		models: state.models,
-		user: state.user
+		user: state.user,
+		leaders: state.leaders
 	};
 };
 
@@ -118,6 +145,9 @@ const mapDispatchToProps = dispatch => {
 	return {
 		gotPollModels: (models) => {
 			dispatch({ type: "GOT_POLLS_FROM_BACKEND", pollModels: models})
+		},
+		gotLeaders: (models) => {
+			dispatch({ type: "GOT_LEADERS_FROM_BACKEND", leaders: models})
 		},
 		gotError: (error) => {
 			dispatch({ type: "GOT_ERROR_FROM_BACKEND", error: error})
@@ -127,6 +157,9 @@ const mapDispatchToProps = dispatch => {
 		},
 		gotUserInfo: (user) => {
 			dispatch({ type: "GOT_USER_INFO", user: user})
+		},
+		gotProfileInfoFromBackend: (data) => {
+			dispatch({ type: "GOT_USER_PROFILE_FROM_BACKEND", user: data})
 		},
 		gotUserToken: (accessToken) => {
 			dispatch({ type: "GOT_USER_TOKEN", accessToken: accessToken})

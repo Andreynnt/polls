@@ -32,6 +32,14 @@ export default function userReducer(state = initUser(), action) {
                 balance: newBalance
             }
         }
+    } else if (action.type === "GOT_USER_PROFILE_FROM_BACKEND") {
+        return {
+            ...state,
+            user: {
+                ...state.user,
+                balance: action.user.balance
+            }
+        }
     }
     console.log("userReducer():   ", state, "type", action.type);
     return state;

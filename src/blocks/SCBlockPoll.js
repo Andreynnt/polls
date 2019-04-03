@@ -62,6 +62,7 @@ class SCBlockPoll extends React.Component {
             backgroundPosition: "50% 50%"
         };
 
+
         return (
               <div style={divStyle} onClick={() => {this.props.action()}}>
                   <Ratio ratio={9/10}>
