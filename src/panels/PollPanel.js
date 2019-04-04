@@ -121,7 +121,7 @@ export class PollPanel extends React.Component {
 
                 {questionAndAnswers}
 
-                <Div style={{background: "#ebedf0"}}>
+                <Div>
                     <Button onClick={() => {
                                  if (this.isAnswered) {
                                      action();

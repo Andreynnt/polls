@@ -7,7 +7,6 @@ import Icon24Done from '@vkontakte/icons/dist/24/done';
 import connect from "react-redux/es/connect/connect";
 import SCCell from "../blocks/SCCell";
 import '../css/separatorForGroup.css';
-import '../css/pollsCells.css';
 import Icon24Flash from '@vkontakte/icons/dist/24/flash';
 import Icon24RecentOutline from '@vkontakte/icons/dist/24/recent_outline';
 

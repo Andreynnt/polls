@@ -1,3 +1,0 @@
-.List .Cell--ios:not(:last-child) .Cell__in:not(.Tappable--active) .Cell__before::before {
-    background: transparent;
-}

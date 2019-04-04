@@ -8,6 +8,7 @@ class SCCell extends React.Component {
     render() {
 
         const cellStyle = {
+            paddingBottom: "7px",
             background: "var(--background_page)",
         };
 
@@ -20,17 +21,25 @@ class SCCell extends React.Component {
         });
 
         return (
-            <Cell key={this.props.i}
-                  data-to="poll"
-                  size="l"
-                  style={cellStyle}
-                  bottomContent={
-                      <div style={twoBLocksStyle}>
-                          {blocks}
-                      </div>
-                  }
-            />
-        );
+            <div style={cellStyle}>
+                <div style={twoBLocksStyle}>
+                    {blocks}
+                </div>
+            </div>
+        )
+
+        // return (
+        //     <Cell key={this.props.i}
+        //           data-to="poll"
+        //           size="l"
+        //           style={cellStyle}
+        //           bottomContent={
+        //               <div style={twoBLocksStyle}>
+        //                   {blocks}
+        //               </div>
+        //           }
+        //     />
+        // );
     }
 }
 

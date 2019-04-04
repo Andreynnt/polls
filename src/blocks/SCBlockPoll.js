@@ -8,7 +8,7 @@ class SCBlockPoll extends React.Component {
     render() {
 
         const width = "47vw";
-        const borderRadius = '12px 12px 0px 0px';
+        const borderRadius = '12px 12px 12px 12px';
         //width * 2 + (margin * 3) = 100
         const rightMargin = this.props.position === 0 ? "1vw" : "2vw";
         const leftMargin = this.props.position === 0 ? "2vw" : "1vw";
@@ -17,61 +17,36 @@ class SCBlockPoll extends React.Component {
             width: width,
             marginRight: rightMargin,
             marginLeft: leftMargin,
-            borderRadius: "12px",
-            backgroundColor: "white"
-        };
-
-        const imageStyle = {
-            backgroundColor: "#fff5cc",
-            borderRadius: borderRadius,
-            height: "70%",
-            width: width,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-        };
-
-        const nameStyle = {
-            marginTop: "5px",
-            marginLeft: "4px",
-            marginRight: "4px",
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            fontSize: "16px"
-        };
-
-        const authorStyle = {
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            color: "grey",
-            marginLeft: "4px",
-            marginRight: "4px",
-            fontSize: "14px"
-        };
-
-        const emptyPhoto = {
-            fontSize: "20px"
+            borderRadius: "12px"
         };
 
         const imageWrapper = {
-            height: "70%",
+            height: "100%",
             borderRadius: borderRadius,
-            backgroundImage: "url(" + AppService.shared().pathToImages() + "pug2.jpg" + ")",
+            backgroundImage: "url(" + AppService.shared().pathToImages() + "spitz.jpg" + ")",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
-            backgroundPosition: "50% 50%"
+            backgroundPosition: "50% 50%",
+            display: "flex",
         };
 
+        const textStyle = {
+            fontSize: "18px",
+            color: "white",
+            alignSelf: "flex-end",
+            fontWeight: "bold",
+            marginLeft: "8px",
+            marginRight: "8px",
+            marginTop: "5px",
+            marginBottom: "5px",
+            overflow: "hidden"
+        };
 
         return (
               <div style={divStyle} onClick={() => {this.props.action()}}>
-                  <Ratio ratio={9/10}>
+                  <Ratio ratio={9/9}>
                       <div style={imageWrapper}>
-
-                      </div>
-                      <div>
-                         <div style={nameStyle}> {this.props.name}</div>
-                         <div style={authorStyle}> {this.props.author}</div>
+                          <div style={textStyle}>{this.props.name}</div>
                       </div>
                   </Ratio>
               </div>

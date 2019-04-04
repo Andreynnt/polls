@@ -8,6 +8,21 @@ import {Provider} from "react-redux";
 import { createStore } from "redux";
 import reducer from './reducers/reducers';
 
+
+connect.subscribe((e) => {
+    switch (e.detail.type) {
+        case 'VKWebAppUpdateConfig':
+            let schemeAttribute = document.createAttribute('scheme');
+            schemeAttribute.value = e.detail.data.scheme ? e.detail.data.scheme : 'client_light';
+            document.body.attributes.setNamedItem(schemeAttribute);
+            break;
+
+        default:
+            console.log(e.detail.type);
+    }
+});
+
+
 // Init VK App
 connect.send('VKWebAppInit', {});
 
