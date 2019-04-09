@@ -55,6 +55,20 @@ export default class HttpService {
             })
     }
 
+    static getUserPolls(id, callback) {
+        return fetch(HttpService.getUrl() + `/getuserpolls/${id}`)
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                console.log(data);
+                callback(HttpService.dataToPollModels(data, true))
+            })
+            .catch(error => {
+                callback(null, error);
+            })
+    }
+
     static sendAnswers(answers) {
         console.log('answers: ', JSON.stringify(answers));
         if (AppService.shared().mode === appModes.debug) {
@@ -72,7 +86,7 @@ export default class HttpService {
         })
     }
 
-    static dataToPollModels(data) {
+    static dataToPollModels(data, needChangeStatusToRunning) {
         if (!data) {
             return {};
         }
@@ -83,6 +97,9 @@ export default class HttpService {
             convertedPoll.name = poll.name || "No name";
             convertedPoll.description = poll.description || "No description";
             convertedPoll.status = poll.status || "No status";
+            if (needChangeStatusToRunning) {
+                convertedPoll.status = "done"
+            }
             convertedPoll.polls = [];
             convertedPoll.currentQuestionNum = 0;
             convertedPoll.answers = [];
@@ -165,6 +182,9 @@ export default class HttpService {
             let convertedLeader = {};
             convertedLeader.id = leader.id || "0";
             convertedLeader.balance = leader.balance || 0;
+            convertedLeader.photo_100 = leader.photo_100 || "";
+            convertedLeader.first_name = leader.first_name || "";
+            convertedLeader.last_name = leader.last_name || "";
             return convertedLeader;
         });
     }

@@ -18,7 +18,7 @@ export const appModes = {
 	prod: 'prod'
 };
 
-const mode = appModes.debug;
+const mode = appModes.prod;
 
 
 class App extends React.Component {
@@ -51,6 +51,21 @@ class App extends React.Component {
 			}
 			console.log("setWebModels() success: ", models);
 			this.props.gotPollModels(models);
+			//this.props.closeMainPreloader();
+			this.setAnsweredWebModels(user.id);
+		});
+	};
+
+	setAnsweredWebModels = (id) => {
+		HttpService.getUserPolls(id, (models, error) => {
+			if (error) {
+				console.log("error", error);
+				//todo показывать error panel
+				this.props.gotError(error);
+				return;
+			}
+			console.log("setAnsweredWebModels() success: ", models);
+			this.props.gotAnsweredPollModels(models);
 			this.props.closeMainPreloader();
 		});
 	};
@@ -145,6 +160,9 @@ const mapDispatchToProps = dispatch => {
 	return {
 		gotPollModels: (models) => {
 			dispatch({ type: "GOT_POLLS_FROM_BACKEND", pollModels: models})
+		},
+		gotAnsweredPollModels: (models) => {
+			dispatch({ type: "GOT_ANSWERED_POLLS_FROM_BACKEND", pollModels: models})
 		},
 		gotLeaders: (models) => {
 			dispatch({ type: "GOT_LEADERS_FROM_BACKEND", leaders: models})

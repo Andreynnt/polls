@@ -60,7 +60,24 @@ export class PollPanel extends React.Component {
 
     render() {
 
-        if (this.state.needPreviewPage) {
+        if (this.state.needPreviewPage || this.props.navigation.selectedPoll.status === "done") {
+
+            let actionForPreviewButton = () => {};
+            let pollIsDone = this.props.navigation.selectedPoll.status === "done";
+
+            if (this.props.navigation.selectedPoll.status === "done") {
+                actionForPreviewButton = () => {
+
+                }
+            } else  {
+                actionForPreviewButton = () => {
+                    this.setState({
+                        ...this.state,
+                        needPreviewPage: false
+                    })
+                }
+            }
+
             return (
                 <Panel id={this.props.id} ref={node => this._ref = node}>
                     <PanelHeader left={<HeaderButton onClick={this.props.changeActivePanel}
@@ -69,13 +86,7 @@ export class PollPanel extends React.Component {
                     </HeaderButton>}>
                         {"Прохождение теста"}
                     </PanelHeader>
-
-                    <SCPollPreview model={this.props.navigation.selectedPoll} runTest={() => {
-                        this.setState({
-                            ...this.state,
-                            needPreviewPage: false
-                        })
-                    }}/>
+                    <SCPollPreview model={this.props.navigation.selectedPoll} runTest={() => actionForPreviewButton()} pollIsDone={pollIsDone}/>
                 </Panel>
             )
         }

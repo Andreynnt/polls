@@ -15,6 +15,8 @@ class SCPollPreview extends React.Component {
             backgroundPosition: "50% 50%"
         };
 
+        let buttonText = this.props.pollIsDone ? "Опрос пройден!" : "Начать";
+
         return (
             <div>
                 <Group title={this.props.model.name} description={"Вопросов: " + String(this.props.model.polls.length) + ", автор: " + String(this.props.model.author)}>
@@ -29,7 +31,7 @@ class SCPollPreview extends React.Component {
                     </Div>
                 </Group>
                 <Div>
-                    <Button level="commerce" onClick={() => this.props.runTest()} size="xl">Начать</Button>
+                    <Button level="commerce" onClick={() => this.props.runTest()} size="xl">{buttonText}</Button>
                 </Div>
             </div>
         )
@@ -38,7 +40,8 @@ class SCPollPreview extends React.Component {
 
 SCPollPreview.propTypes = {
     runTest: PropTypes.func.isRequired,
-    model: PropTypes.object.isRequired
+    model: PropTypes.object.isRequired,
+    pollIsDone: PropTypes.bool.isRequired
 };
 
 export default SCPollPreview;

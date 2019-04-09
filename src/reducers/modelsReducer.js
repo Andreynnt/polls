@@ -2,7 +2,8 @@ import HttpService from "../services/HttpService";
 
 const initModels = () => {
     return {
-        pollModels: null
+        pollModels: null,
+        answeredPollModels: null
     };
 };
 
@@ -18,16 +19,25 @@ export default function modelsReducer(state = initModels(), action) {
     } else if (action.type === "GOT_POLLS_FROM_BACKEND") {
         return {
             ...state,
-            pollModels: action.pollModels
+            pollModels: [...action.pollModels]
+        }
+    } else if (action.type === "GOT_ANSWERED_POLLS_FROM_BACKEND") {
+        return {
+            ...state,
+            answeredPollModels: [...action.pollModels]
         }
     } else if (action.type === "SEND_ANSWERS") {
         state.pollModels[action.pollNum].answers.push(action.lastAnswer);
         console.log(state.pollModels[action.pollNum].answers);
         state.pollModels[action.pollNum].status = "done";
 
+        let poll = state.pollModels[action.pollNum];
+        state.answeredPollModels.push(poll);
+        state.pollModels.splice(action.pollNum, 1);
+
         let result = {
-            answers: state.pollModels[action.pollNum].answers,
-            poll_id: state.pollModels[action.pollNum].id,
+            answers: poll.answers,
+            poll_id: poll.id,
             resp_id: action.userId
         };
 

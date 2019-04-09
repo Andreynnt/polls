@@ -32,10 +32,10 @@ export class LeadersPanel extends React.Component {
                 <Cell
                       href={`https://vk.com/id${leader.id}`}
                       key={i}
-                      before={<Avatar size={56} src={leader.img || "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg"}/>}
+                      before={<Avatar size={56} src={leader.photo_100 || "https://pp.userapi.com/c841034/v841034569/3b8c1/pt3sOw_qhfg.jpg"}/>}
                       asideContent={<SCCoin quantity={leader.balance || 0}/>}
                 >
-                   {leader.id}
+                   {leader.first_name + " " + leader.last_name}
                 </Cell>
             )
         });

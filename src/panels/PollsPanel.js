@@ -25,14 +25,17 @@ export class PollsPanel extends React.Component {
     }
 
     render() {
+        let pollsTmp = [];
+        if (this.props.navigation.pollsMode === 'passed') {
+            pollsTmp = this.props.models.answeredPollModels;
+        } else {
+            pollsTmp = this.props.models.pollModels;
+        }
 
-        let polls = this.props.models.pollModels.map((item, i) => {
-            if (!(((item.status === this.state.statuses['STATUS_DONE']) && this.props.navigation.pollsMode === 'passed') || (((item.status === this.state.statuses['STATUS_RUNNING']) && this.props.navigation.pollsMode === 'new')))) {
-                return null
-            }
+        let polls = pollsTmp.map((item, i) => {
             return {
                 author: item.author,
-                action: () => item.status === this.state.statuses['STATUS_RUNNING'] ? this.props.selectCell(item, i) : null,
+                action: () => this.props.selectCell(item, i),
                 dataTo:"poll",
                 name: item.name
             };
