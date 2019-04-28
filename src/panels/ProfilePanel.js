@@ -26,12 +26,12 @@ export class ProfilePanel extends React.Component {
                                           style={{ background: 'var(--control_tint)' }}
                                           size={56}/>}
                           asideContent={<SCCoin quantity={coins}/>}
-                          description="Их можно менять на деньги">Ваши монеты</Cell>
+                          description="Скоро появится вывод в голоса!">Ваши монеты</Cell>
 
                     <Cell before={<Avatar src= {AppService.shared().pathToImages() + "icons8-crown.png"}
                                           style={{ background: 'var(--control_tint)' }}
                                           size={56}/>}
-                          description="Разработчки трудятся над приложением">{infoText}</Cell>
+                          description="Проходи опросы и зарабатывай">{infoText}</Cell>
                 </Group>
             </Panel>
         );

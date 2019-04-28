@@ -124,7 +124,7 @@ export default class HttpService {
                     callback({data: null, error: e.detail.type});
             }
         });
-        connect.send("VKWebAppGetAuthToken", {"app_id": APP_ID, "scope": "friends,status"});
+        connect.send("VKWebAppGetAuthToken", {"app_id": APP_ID, "scope": ""});
     }
 
     static getInfo(token, callback) {
@@ -159,8 +159,8 @@ export default class HttpService {
         })
     }
 
-    static getLeaders(callback) {
-        return fetch(HttpService.getUrl() + `/getleaders`)
+    static getLeaders(callback, limit = 20, offset = 0) {
+        return fetch(HttpService.getUrl() + `/getleaders?limit=${limit}&offset=${offset}`)
             .then(response => {
                 return response.json()
             })

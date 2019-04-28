@@ -11,6 +11,7 @@ import HttpService from "./services/HttpService";
 import PollModel from "./models/PollModel";
 import * as AppService from "./services/AppService";
 import LeadersPanel from "./panels/LeadersPanel";
+import StartInfoPanel from "./panels/StartInfoPanel";
 
 
 export const appModes = {
@@ -18,28 +19,30 @@ export const appModes = {
 	prod: 'prod'
 };
 
-const mode = appModes.prod;
+const mode = appModes.debug;
 
 
 class App extends React.Component {
 	constructor(props) {
 		super(props);
 		AppService.shared().mode = mode;
+	}
 
-		const setDefaultModels = () => {
-			const polls = HttpService.parseDefaultJson();
-			let pollModels = polls.map(poll => new PollModel(poll));
-			this.props.gotPollModels(pollModels);
-			setTimeout(() => {this.props.closeMainPreloader();}, 0);
-		};
-
+	loadAllInfo = () => {
 		if (AppService.shared().mode === appModes.prod) {
 			this.getUser();
 		} else if (AppService.shared().mode === appModes.debug) {
-			setDefaultModels();
+			this.setDefaultModels();
 			this.setLeaders();
 		}
-	}
+	};
+
+	setDefaultModels = () => {
+		const polls = HttpService.parseDefaultJson();
+		let pollModels = polls.map(poll => new PollModel(poll));
+		this.props.gotPollModels(pollModels);
+		setTimeout(() => {this.props.closeMainPreloader();}, 0);
+	};
 
 	setWebModels = (user) => {
 		HttpService.getPolls(user, (models, error) => {
@@ -124,26 +127,38 @@ class App extends React.Component {
 
 	render() {
 		const preparedTabbar = (<SCTabbar/>);
-		return (
-			<Epic activeStory={this.props.navigation.activeStory} tabbar={preparedTabbar}>
-				<View popout={<ScreenSpinner />} id="preloader" activePanel="preloader">
-					<PreloaderPanel/>
-				</View>
 
-				<View popout={this.props.navigation.alert} id="polls" activePanel={this.props.navigation.activePanel}>
-					<Polls id="polls"/>
-					<Poll id="poll"/>
-				</View>
-
-				<View id="leaders" activePanel={this.props.navigation.activeStory}>
-					<LeadersPanel id="leaders"/>
-				</View>
-
-				<View id="profile" activePanel={this.props.navigation.activeStory}>
-					<ProfilePanel user={this.props.user.user} id="profile"/>
-				</View>
-			</Epic>
+		// первый старт
+		let block = (
+			<StartInfoPanel id="StartInfoPanel" loadAction={() => this.loadAllInfo()}/>
 		);
+
+		// не первый старт
+		if (this.props.navigation.activeStory !== "StartInfoPanel") {
+			block = (
+				<Epic activeStory={this.props.navigation.activeStory} tabbar={preparedTabbar}>
+					<View popout={<ScreenSpinner/>} id="preloader" activePanel="preloader">
+						<PreloaderPanel/>
+					</View>
+
+					<View popout={this.props.navigation.alert} id="polls"
+						  activePanel={this.props.navigation.activePanel}>
+						<Polls id="polls"/>
+						<Poll id="poll"/>
+					</View>
+
+					<View id="leaders" activePanel={this.props.navigation.activeStory}>
+						<LeadersPanel id="leaders"/>
+					</View>
+
+					<View id="profile" activePanel={this.props.navigation.activeStory}>
+						<ProfilePanel user={this.props.user.user} id="profile"/>
+					</View>
+				</Epic>
+			);
+		}
+
+		return block;
 	}
 }
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Cell } from '@vkontakte/vkui';
 import SCBlockPoll from "./SCBlockPoll";
 import '../css/separatorForCell.css';
 

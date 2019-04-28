@@ -1,13 +1,30 @@
 import React from 'react';
 import { Panel } from '@vkontakte/vkui';
-import {Cell, Group, HeaderContext, List, PanelHeader, PanelHeaderContent, Avatar} from '@vkontakte/vkui';
+import {Cell, Group, List, PanelHeader, Avatar, PullToRefresh} from '@vkontakte/vkui';
 import connect from "react-redux/es/connect/connect";
 import SCCoin from "../blocks/SCCoin";
-
+import HttpService from "../services/HttpService";
 
 export class LeadersPanel extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            fetching: false
+        };
+
+        this.onRefresh = () => {
+            this.setState({ fetching: true });
+            HttpService.getLeaders((models, error) => {
+                    if (error) {
+                        console.log("error", error);
+                        this.setState({ fetching: false });
+                        return;
+                    }
+                    this.props.gotLeaders(models);
+                    this.setState({ fetching: false });
+                }
+            );
+        };
     }
 
     render() {
@@ -17,11 +34,13 @@ export class LeadersPanel extends React.Component {
                    Топ игроков
                 </PanelHeader>
 
-                <Group title={"Лучшие игроки"}>
-                    <List >
-                        {this.makeCells(this.props.leaders.leaders)}
-                    </List>
-                </Group>
+                <PullToRefresh onRefresh={this.onRefresh} isFetching={this.state.fetching}>
+                    <Group title={"Лучшие игроки"}>
+                        <List >
+                            {this.makeCells(this.props.leaders.leaders)}
+                        </List>
+                    </Group>
+                </PullToRefresh>
             </Panel>
         );
     }
@@ -39,7 +58,8 @@ export class LeadersPanel extends React.Component {
                 </Cell>
             )
         });
-    }
+    };
+
 }
 
 const mapStateToProps = state => {
@@ -48,5 +68,12 @@ const mapStateToProps = state => {
     };
 };
 
+const mapDispatchToProps = dispatch => {
+    return {
+        gotLeaders: (models) => {
+            dispatch({ type: "GOT_LEADERS_FROM_BACKEND", leaders: models})
+        }
+    }
+};
 
-export default connect(mapStateToProps)(LeadersPanel);
+export default connect(mapStateToProps, mapDispatchToProps)(LeadersPanel);

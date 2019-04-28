@@ -1,6 +1,5 @@
 import React from 'react';
 import { Tabbar, TabbarItem } from '@vkontakte/vkui';
-import Icon28User from '@vkontakte/icons/dist/28/user';
 import Icon28Newsfeed from '@vkontakte/icons/dist/28/newsfeed';
 import connect from "react-redux/es/connect/connect";
 import Icon28Users from '@vkontakte/icons/dist/28/users';

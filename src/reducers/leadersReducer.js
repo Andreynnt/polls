@@ -1,4 +1,3 @@
-import HttpService from "../services/HttpService";
 
 const initModels = () => {
     return {

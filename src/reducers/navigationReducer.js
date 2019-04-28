@@ -1,7 +1,7 @@
 const initApp = () => {
     return {
-        activePanel: 'preloader',
-        activeStory: 'preloader',
+        activePanel: 'StartInfoPanel',
+        activeStory: 'StartInfoPanel',
         selectedPoll: null,
         selectedPollNum: null,
         alert: null,
@@ -17,6 +17,12 @@ export default function navigationReducer(state = initApp(), action) {
         return {
             ...state,
             activeStory: action.payload
+        }
+    } else if (action.type === "CHANGE_STORY_AND_PANEL") {
+        return {
+                ...state,
+                activeStory: action.payload.story,
+                activePanel: action.payload.panel
         }
     } else if (action.type === "CHANGE_PANEL") {
         return {
