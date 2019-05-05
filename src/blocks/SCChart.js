@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import Chart from 'react-apexcharts'
-import {IOS, platform, Header, Div} from "@vkontakte/vkui";
-const osname = platform();
+import {platform, Header} from "@vkontakte/vkui";
+
 
 class SCChart extends React.Component {
     constructor(props) {
@@ -20,9 +20,26 @@ class SCChart extends React.Component {
                     show: false
                 },
                 fontFamily: font,
-                events: {
-                    click: null,
-                    selection: null
+                selection: {
+                    enabled: false
+                },
+                states: {
+                    normal: {
+                        filter: {
+                            type: 'none',
+                            value: 0,
+                        }
+                    },
+                    hover: {
+                        filter: {
+                            type: 'none'
+                        }
+                    },
+                    active: {
+                        filter: {
+                            type: 'none'
+                        }
+                    },
                 }
             },
             plotOptions: {
@@ -91,10 +108,11 @@ class SCChart extends React.Component {
             },
             states: {
                 hover: {
-                    filter: {
-                        type: 'none',
-                    }
+                    filter: { type: 'none' }
                 },
+                active: {
+                    filter: { type: 'none' }
+                }
             }
         };
 
@@ -121,9 +139,9 @@ class SCChart extends React.Component {
         }
 
         return (
-            <Div style={{marginRight: "20px"}}>
+            <div style={{marginRight: "20px", pointerEvents: "none"}}>
                 <Chart options={settings} series={settings.series} type="bar"  height={height} />
-            </Div>
+            </div>
         );
     }
 }

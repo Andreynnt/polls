@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, Group, PanelHeader, Cell, PanelHeaderContent, HeaderContext, List } from '@vkontakte/vkui';
+import { Panel, Group, PanelHeader, Cell, PanelHeaderContent, HeaderContext, List, Div } from '@vkontakte/vkui';
 import SCList from "../blocks/SCList";
 import Icon16Dropdown from '@vkontakte/icons/dist/16/dropdown';
 import Icon24Done from '@vkontakte/icons/dist/24/done';
@@ -93,7 +93,7 @@ export class PollsPanel extends React.Component {
                     </List>
                 </HeaderContext>
                 <Group>
-                    <SCList cells={cells}/>
+                    {pollsTmp.length === 0 ? this.getEmptyPage(this.props.navigation.pollsMode) : <SCList cells={cells}/>}
                 </Group>
             </Panel>
         );
@@ -108,6 +108,16 @@ export class PollsPanel extends React.Component {
         this.props.changeMode(mode);
         requestAnimationFrame(this.toggleContext);
     };
+
+    getEmptyPage = (mode) => {
+        let text = mode === 'passed' ? 'Пройденных опросов нет' : 'Новых опросов еще нет';
+
+        return (
+            <Div style={{height: "80vh", zIndex: "0" , display: "flex", alignItems: "center", justifyContent: "center"}}>
+                <div style={{color: "var(--text_secondary)"}}>{text}</div>
+            </Div>
+        );
+    }
 }
 
 PollsPanel.propTypes = {
