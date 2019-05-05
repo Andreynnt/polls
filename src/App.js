@@ -19,13 +19,13 @@ export const appModes = {
 	prod: 'prod'
 };
 
-const mode = appModes.debug;
-
+let mode = appModes.prod;
 
 class App extends React.Component {
 	constructor(props) {
 		super(props);
 		AppService.shared().mode = mode;
+		this.loadAllInfo();
 	}
 
 	loadAllInfo = () => {
@@ -33,6 +33,7 @@ class App extends React.Component {
 			this.getUser();
 		} else if (AppService.shared().mode === appModes.debug) {
 			this.setDefaultModels();
+			this.setDefaultAnsweredModels();
 			this.setLeaders();
 		}
 	};
@@ -42,6 +43,31 @@ class App extends React.Component {
 		let pollModels = polls.map(poll => new PollModel(poll));
 		this.props.gotPollModels(pollModels);
 		setTimeout(() => {this.props.closeMainPreloader();}, 0);
+	};
+
+	setDefaultAnsweredModels = () => {
+		const polls = HttpService.parseAnsweredDefaultJson();
+		let pollModels = polls.map(poll => new PollModel(poll));
+		this.props.gotAnsweredPollModels(pollModels);
+	};
+
+	checkUser = (response) => {
+		HttpService.checkNewUser(response.response[0], (isNew, error) => {
+			if (error) {
+				console.log("checkNewUser error", error);
+				this.props.gotError(error);
+				return;
+			}
+			console.log("is user new? - ", isNew);
+			if (isNew === true) {
+				this.props.openStartInfo("StartInfoPanel");
+			} else {
+				this.props.gotUserInfo(response.response[0]);
+				this.getProfile(response.response[0].id);
+				this.setWebModels(this.props.user.user);
+				this.setLeaders();
+			}
+		})
 	};
 
 	setWebModels = (user) => {
@@ -115,10 +141,11 @@ class App extends React.Component {
 						//эта херня ломает профиль и закрытие
 						//this.props.gotUserInfo({first_name: error2.message})
 					} else {
-						this.props.gotUserInfo(response.response[0]);
-						this.getProfile(response.response[0].id);
-						this.setWebModels(this.props.user.user);
-						this.setLeaders();
+						this.checkUser(response);
+						// this.props.gotUserInfo(response.response[0]);
+						// this.getProfile(response.response[0].id);
+						// this.setWebModels(this.props.user.user);
+						// this.setLeaders();
 					}
 				});
 			}
@@ -126,15 +153,15 @@ class App extends React.Component {
 	};
 
 	render() {
-		const preparedTabbar = (<SCTabbar/>);
 
-		// первый старт
 		let block = (
 			<StartInfoPanel id="StartInfoPanel" loadAction={() => this.loadAllInfo()}/>
 		);
 
 		// не первый старт
 		if (this.props.navigation.activeStory !== "StartInfoPanel") {
+			const preparedTabbar = (<SCTabbar/>);
+
 			block = (
 				<Epic activeStory={this.props.navigation.activeStory} tabbar={preparedTabbar}>
 					<View popout={<ScreenSpinner/>} id="preloader" activePanel="preloader">
@@ -196,6 +223,9 @@ const mapDispatchToProps = dispatch => {
 		},
 		gotUserToken: (accessToken) => {
 			dispatch({ type: "GOT_USER_TOKEN", accessToken: accessToken})
+		},
+		openStartInfo: () => {
+			dispatch({ type: "CHANGE_STORY_AND_PANEL", payload: {story: "StartInfoPanel", panel: "StartInfoPanel"}})
 		}
 	}
 };

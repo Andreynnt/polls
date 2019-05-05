@@ -9,6 +9,8 @@ import SCAlert from "../blocks/SCAlert";
 import connect from "react-redux/es/connect/connect";
 import * as ReactDOM from "react-dom";
 import SCPollPreview from "../blocks/SCPollPreview";
+import SCChart from "../blocks/SCChart";
+import HttpService from "../services/HttpService";
 
 const osname = platform();
 const defaultAnswer = "Asasa2211+A-+Aa_12±!@#";
@@ -23,7 +25,7 @@ export class PollPanel extends React.Component {
         this.onChangeOpen = this.onChange.bind(this);
         this.onChangeWithRemoveRadio = this.onChangeWithRemoveRadio.bind(this);
         this.onChangeWithRemoveCell = this.onChangeWithRemoveCell.bind(this);
-        this.state = {needError: false, needPreviewPage: true};
+        this.state = {needError: false, needPreviewPage: true, isWatchingAnsweredPoll: false};
     }
 
     renderAnswers(questionWithAnswers) {
@@ -60,22 +62,20 @@ export class PollPanel extends React.Component {
 
     render() {
 
-        if (this.state.needPreviewPage || this.props.navigation.selectedPoll.status === "done") {
-
+        //настройка превью
+        if ((this.state.needPreviewPage || this.props.navigation.selectedPoll.status === "done") && !this.state.isWatchingAnsweredPoll) {
             let actionForPreviewButton = () => {};
             let pollIsDone = this.props.navigation.selectedPoll.status === "done";
-
             if (this.props.navigation.selectedPoll.status === "done") {
+                //нажимаем посмотреть результаты в пройденном опросе
                 actionForPreviewButton = () => {
-
+                    this.getResult(this.props.navigation.selectedPoll.id, (data) => {
+                        this.props.gotPollResultFromBackend(data);
+                        this.setState({...this.state, needPreviewPage: false, isWatchingAnsweredPoll: true})
+                    });
                 }
             } else  {
-                actionForPreviewButton = () => {
-                    this.setState({
-                        ...this.state,
-                        needPreviewPage: false
-                    })
-                }
+                actionForPreviewButton = () => { this.setState({...this.state, needPreviewPage: false })}
             }
 
             return (
@@ -84,41 +84,11 @@ export class PollPanel extends React.Component {
                                                      data-to="polls">
                         {osname === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
                     </HeaderButton>}>
-                        {"Прохождение теста"}
+                        {this.props.navigation.selectedPoll.status === "done" ? "Просмотр результатов" : "Прохождение опроса"}
                     </PanelHeader>
                     <SCPollPreview model={this.props.navigation.selectedPoll} runTest={() => actionForPreviewButton()} pollIsDone={pollIsDone}/>
                 </Panel>
             )
-        }
-
-        const questionNum = this.props.navigation.selectedPoll.currentQuestionNum;
-        const questionWithAnswers = this.props.navigation.selectedPoll.polls[questionNum];
-        const answers = this.renderAnswers(questionWithAnswers);
-        const errorBlock = this.state.needError ? <FormStatus state="error">Необходимо ответить на вопрос</FormStatus> : null;
-
-        const questionAndAnswers = (
-            <Group>
-                <SCQuestion question={questionWithAnswers.question} num={questionNum} questionsAmount={this.props.navigation.selectedPoll.polls.length}/>
-                <FormLayout>
-                    <FormLayoutGroup>
-                        {answers}
-                        {errorBlock}
-                    </FormLayoutGroup>
-                </FormLayout>
-            </Group>
-        );
-
-        let action = () => this.props.answerQuestion(this.props.navigation.selectedPollNum, this.answer);
-        if (questionNum === this.props.navigation.selectedPoll.polls.length - 1) {
-            action = () => {
-                let userId = 0;
-                if (this.props.user && this.props.user.user) {
-                    userId = this.props.user.user.id ? this.props.user.user.id : 0;
-                }
-                this.props.plusOneCoinToUser();
-                this.props.sendAnswers(this.props.navigation.selectedPollNum, this.answer, userId);
-                this.props.showPopout(<SCAlert/>);
-            }
         }
 
         return (
@@ -127,15 +97,17 @@ export class PollPanel extends React.Component {
                                                  data-to="polls">
                                         {osname === IOS ? <Icon28ChevronBack/> : <Icon24Back/>}
                                   </HeaderButton>}>
-                    {"Прохождение теста"}
+                    {this.props.navigation.selectedPoll.status === "done" ? "Просмотр результатов" : "Прохождение опроса"}
                 </PanelHeader>
 
-                {questionAndAnswers}
+                {this.state.isWatchingAnsweredPoll ? this.getChart() : this.getQuestionsWithAnswers()}
 
                 <Div>
                     <Button onClick={() => {
-                                 if (this.isAnswered) {
-                                     action();
+                                 if (this.state.isWatchingAnsweredPoll) {
+                                     this.getActionForAnsweredPoll()();
+                                 } else if (this.isAnswered) {
+                                     this.getActionForAnswer()();
                                      this.answer = defaultAnswer;
                                      this.removeRadioChecked();
                                      this.removeInput();
@@ -154,12 +126,85 @@ export class PollPanel extends React.Component {
                             }}
                             size="xl"
                             data-to="polls">
-                        Ответить
+                        {this.state.isWatchingAnsweredPoll ? "Далее" : "Ответить"}
                     </Button>
                 </Div>
             </Panel>
         );
     }
+
+    getActionForAnswer = () => {
+        const questionNum = this.props.navigation.selectedPoll.currentQuestionNum;
+        let action = () => this.props.answerQuestion(this.props.navigation.selectedPollNum, this.answer);
+        if (questionNum === this.props.navigation.selectedPoll.polls.length - 1) {
+            action = () => {
+                let userId = 0;
+                if (this.props.user && this.props.user.user) {
+                    userId = this.props.user.user.id ? this.props.user.user.id : 0;
+                }
+                this.props.plusOneCoinToUser();
+                this.props.sendAnswers(this.props.navigation.selectedPollNum, this.answer, userId);
+                this.props.navigation.selectedPoll.currentQuestionNum = 0;
+                this.props.showPopout(<SCAlert/>);
+            }
+        }
+        return action;
+    };
+
+    getActionForAnsweredPoll = () => {
+        const questionNum = this.props.navigation.selectedPoll.currentQuestionNum;
+        let action = () => this.props.watchNextAnswer(this.props.navigation.selectedPollNum);
+        if (questionNum === this.props.navigation.selectedPollResult.questions.length - 1) {
+            action = () => {
+                this.props.navigation.selectedPoll.currentQuestionNum = 0;
+                this.props.goBackToPolls();
+            }
+        }
+        return action;
+    };
+
+
+    getQuestionsWithAnswers = () => {
+        const questionNum = this.props.navigation.selectedPoll.currentQuestionNum;
+        const questionWithAnswers = this.props.navigation.selectedPoll.polls[questionNum];
+        const answers = this.renderAnswers(questionWithAnswers);
+        const errorBlock = this.state.needError ? <FormStatus state="error">Необходимо ответить на вопрос</FormStatus> : null;
+
+        return (
+            <Group>
+                <SCQuestion question={questionWithAnswers.question} num={questionNum} questionsAmount={this.props.navigation.selectedPoll.polls.length}/>
+                <FormLayout>
+                    <FormLayoutGroup>
+                        {answers}
+                        {errorBlock}
+                    </FormLayoutGroup>
+                </FormLayout>
+            </Group>
+        );
+    };
+
+    getChart = () => {
+        const questionNum = this.props.navigation.selectedPoll.currentQuestionNum;
+        const selectedResult = this.props.navigation.selectedPollResult.questions[questionNum];
+        return (
+            <Group>
+                <SCQuestion question={selectedResult.name} num={questionNum} questionsAmount={this.props.navigation.selectedPollResult.questions.length}/>
+                <SCChart questionWithAnswers={selectedResult}/>
+            </Group>
+        )
+    };
+
+    getResult = (id, callback) => {
+        HttpService.getPollResult(id, (data, error) => {
+            if (error) {
+                console.error("getPollResult error", error);
+                return;
+            }
+            console.log("getResult() success");
+            callback(data);
+        });
+    };
+
 
     removeRadioChecked() {
         const radiosCollection = ReactDOM.findDOMNode(this._ref).getElementsByClassName('Radio__input');
@@ -265,8 +310,17 @@ const mapDispatchToProps = dispatch => {
         answerQuestion: (pollNum, answer) => {
             dispatch({ type: "USER_ANSWERED", pollNum: pollNum, answer: answer})
         },
+        watchNextAnswer: (pollNum) => {
+            dispatch({ type: "WATCH_NEXT_ANSWER", pollNum: pollNum})
+        },
         sendAnswers: (pollNum, lastAnswer, userId) => {
             dispatch({ type: "SEND_ANSWERS", pollNum: pollNum, lastAnswer: lastAnswer, userId:userId})
+        },
+        goBackToPolls: () => {
+            dispatch({ type: "RETURN_TO_POLLS"})
+        },
+        gotPollResultFromBackend: (result) => {
+            dispatch({ type: "GOT_POLL_RESULT_FROM_BACKEND", result: result})
         }
     }
 };

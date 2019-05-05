@@ -15,7 +15,8 @@ class SCPollPreview extends React.Component {
             backgroundPosition: "50% 50%"
         };
 
-        let button = this.props.pollIsDone ? null : (<Div><Button level="commerce" onClick={() => this.props.runTest()} size="xl">{"Начать"}</Button></Div>);
+        const text = this.props.pollIsDone ? "Посмотреть результаты" : "Начать";
+        const button = (<Div><Button level="commerce" onClick={() => this.props.runTest()} size="xl">{text}</Button></Div>);
 
         return (
             <div>

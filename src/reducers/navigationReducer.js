@@ -1,9 +1,10 @@
 const initApp = () => {
     return {
-        activePanel: 'StartInfoPanel',
-        activeStory: 'StartInfoPanel',
+        activePanel: 'preloader',
+        activeStory: 'preloader',
         selectedPoll: null,
         selectedPollNum: null,
+        selectedPollResult: null,
         alert: null,
         pollsMode: 'new'
     };
@@ -42,6 +43,11 @@ export default function navigationReducer(state = initApp(), action) {
             activePanel: "polls",
             alert: action.payload
         }
+    } else if (action.type === "RETURN_TO_POLLS") {
+        return {
+            ...state,
+            activePanel: "polls",
+        }
     } else if (action.type === "CLOSE_POPOUT") {
         return {
             ...state,
@@ -61,6 +67,11 @@ export default function navigationReducer(state = initApp(), action) {
     } else if (action.type === "GOT_ERROR_FROM_BACKEND") {
         //todo показывать error panel
        return state;
+    } else if (action.type === "GOT_POLL_RESULT_FROM_BACKEND") {
+        return {
+            ...state,
+            selectedPollResult: action.result
+        }
     }
     //console.log("navigationReducer():   ", state);
     return state;

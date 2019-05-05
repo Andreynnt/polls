@@ -2,7 +2,9 @@ import React from "react";
 import {Panel, Button, Group, Div} from '@vkontakte/vkui';
 import connect from "react-redux/es/connect/connect";
 import * as AppService from "../services/AppService";
-
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import "../../src/css/sliderSlide.css";
 
 class StartInfoPanel extends React.Component {
     render() {
@@ -17,38 +19,59 @@ class StartInfoPanel extends React.Component {
           VKPolls
         `;
 
-        const imgStyle = {
-            width: "47vw"
+        const sliderImage = {
+            display: "block",
+            maxHeight: "50vh",
+            width: "auto",
+            height: "auto"
         };
 
-        const divStyle = {
+        const buttonStyle = {
+            marginTop: "30px"
+        };
+
+        const sliderTitle = {
+            fontSize: "20px",
+            fontWeight: "bolder",
+            marginTop: "50px",
+            marginBottom: "30px",
+        };
+
+        const sliderText = {
+            fontSize: "15px",
+            marginTop: "30px",
+            marginBottom: "40px",
+        };
+
+        const sliderWrapper = {
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
             flexDirection: "column",
-            height: "100vh",
-            background: "linear-gradient(90deg, rgba(0,221,201,1) 38%, rgba(0,212,255,0.8449754901960784) 100%)"
-        };
-
-        const textWrapper = {
-            marginBottom: "10vh",
-            color: "white",
-            marginTop: "4vh"
-        };
-
-        const titleTextWrapper = {
-            color: "white",
-            fontSize: "25px",
-            fontWeight: "bold"
+            alignItems: "center",
+            justifyContent: "center"
         };
 
         return (
             <Panel id={this.props.id}>
-                <Div style={divStyle}>
-                    <img style={imgStyle} src={AppService.shared().pathToImages() + "pollsWhite.png"} alt={"d"}/>
-                    <div style={titleTextWrapper}>{title}</div>
-                    <div style={textWrapper}>{text}</div>
-                    <Button size="xl" level="secondary" onClick={() => {this.props.openApp(); this.props.loadAction();}}>Открыть приложение</Button>
+                <Div>
+                    <Carousel showThumbs={false} showStatus={false}>
+                        <div style={sliderWrapper}>
+                            <div style={sliderTitle}>Проходи опросы</div>
+                            <img style={sliderImage} src={AppService.shared().pathToImages() + "iphone7-2.png"} />
+                            <div style={sliderText}>Проходи социологические исследования</div>
+                        </div>
+                        <div style={sliderWrapper}>
+                            <div style={sliderTitle}>Зарабатывай монеты</div>
+                            <img style={sliderImage} src={AppService.shared().pathToImages() + "iphone7-1.png"} />
+                            <div style={sliderText}>Поднмайся в таблице лидеров</div>
+                        </div>
+                        <div style={sliderWrapper}>
+                            <div style={sliderTitle}>Создавай опросы</div>
+                            <img style={sliderImage} src={AppService.shared().pathToImages() + "leming2.png"} />
+                            <div style={sliderText}>Создавай опросы на johnylemming.ru</div>
+                        </div>
+                    </Carousel>
+
+                    <Button style={buttonStyle} size="xl" level="commerce" onClick={() => {this.props.openApp(); this.props.loadAction();}}>Открыть приложение</Button>
                 </Div>
             </Panel>
         );

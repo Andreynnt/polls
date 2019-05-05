@@ -23,7 +23,7 @@ export default class HttpService {
         try {
             response = JSON.parse(data);
         } catch (e) {
-            console.log("Parse JSON error: ", e.toString());
+            console.log("Parse JSON error: ", e.toString(), data);
         }
         return response
     }
@@ -55,6 +55,32 @@ export default class HttpService {
             })
     }
 
+    static checkNewUser(user, callback) {
+        let bdate = "0", city = "0", sex = "0", id = "0", photo_100 = "0", first_name="0", last_name="0";
+
+        if (user) {
+            bdate = user.bdate ? user.bdate : "0";
+            city = user.city ? user.city.title : "0";
+            sex = user.sex ? user.sex : "0";
+            id = user.id ? user.id : "0";
+            photo_100 = user.photo_100 ? user.photo_100 : "0";
+            first_name = user.photo_100 ? user.first_name : "0";
+            last_name = user.last_name ? user.last_name : "0";
+        }
+
+        return fetch(HttpService.getUrl() + `/checkifuserisnew?bdate=${bdate}&city=${city}&sex=${sex}&id=${id}&photo_100=${photo_100}&first_name=${first_name}&last_name=${last_name}`)
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                console.log(data);
+                callback(data)
+            })
+            .catch(error => {
+                callback(null, error);
+            })
+    }
+
     static getUserPolls(id, callback) {
         return fetch(HttpService.getUrl() + `/getuserpolls/${id}`)
             .then(response => {
@@ -63,6 +89,21 @@ export default class HttpService {
             .then(data => {
                 console.log(data);
                 callback(HttpService.dataToPollModels(data, true))
+            })
+            .catch(error => {
+                callback(null, error);
+            })
+    }
+
+    static getPollResult(id, callback) {
+        return fetch(HttpService.getUrl() + `/getpollresult/${id}`)
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                console.log(data);
+                //callback(this.parseResultDefaultJson());
+                callback(data);
             })
             .catch(error => {
                 callback(null, error);
@@ -208,7 +249,7 @@ export default class HttpService {
         [
             {
               "id": "myId1",
-              "name": "Выбор лучшей песни1",
+              "name": "Выбор лучшей песни года",
               "description": "Выбираем лучшую песню 2019 года.",
               "author": "Олег Газманов",
               "status": "running",
@@ -257,7 +298,7 @@ export default class HttpService {
             },
             {
               "id": "myId1",
-              "name": "Выбор лучшей песни2",
+              "name": "Лучший атомобиль",
               "description": "Выбираем лучшую песню 2019 года.",
               "author": "Олег Газманов",
               "status": "running",
@@ -311,7 +352,7 @@ export default class HttpService {
             },
             {
               "id": "myId1",
-              "name": "Выбор лучшей песни3",
+              "name": "Лучшее приложение",
               "description": "Выбираем лучшую песню 2019 года",
               "author": "Олег Газманов, или кто-то еще другой.",
               "status": "running",
@@ -487,5 +528,105 @@ export default class HttpService {
             }
         ]`;
         return HttpService.parseJson(pollsJSON)
+    }
+
+    static parseAnsweredDefaultJson() {
+        const pollsJSON= `
+        [
+            {
+              "id": "18",
+              "name": "Человек года по версии GQ",
+              "description": "Хаски или Баста? Мальбек или гуф?",
+              "author": "GQ",
+              "status": "done",
+              "polls": 
+              [
+                { "id":"myPollId1",
+                  "question":"Выберете лучшего",
+                  "type":"multi",
+                  "answers": 
+                  [
+                      {"name": "Хаски", "amount": 10},
+                      {"name": "Баста", "amount": 39},
+                      {"name": "Иван Дорн", "amount": 7},
+                      {"name": "Face", "amount": 24},
+                      {"name": "Мистер х", "amount": 24},
+                      {"name": "Старина", "amount": 24}
+                  ],
+                  "other":true,
+                  "otherAmount": "1"
+                },
+                { "id":"myPollId1",
+                  "question":"Кто хуже всех?",
+                  "type":"one",
+                  "answers": 
+                  [
+                    {"name": "Гуф", "amount": 8},
+                    {"name": "Алла Пугачева", "amount": 1}
+      
+                  ],
+                   "other": true,
+                   "otherAmount": 2
+                }
+              ]
+            }
+        ]`;
+        return HttpService.parseJson(pollsJSON)
+    }
+
+    static parseResultDefaultJson() {
+        const json = `
+        {
+            "status": "running",
+            "moderated": true,
+            "resp_num": 1000,
+            "deleted": false,
+            "answers": 6,
+            "id": 18,
+            "name": "Твой первый опрос",
+            "description": "нойди опрос и получи первые монеты",
+            "questions": [
+                {
+                    "name": "Сможешь выбрать один вариант ответа из этого списка?",
+                    "type": "one",
+                    "answers": {
+                        "Да": 4,
+                        "Сейчас попробую": 2
+                    }
+                },
+                {
+                    "name": "У тебя получилось. А теперь ты можешь выбрать один вариант из списка или написать свой собственный ответ",
+                    "type": "one",
+                    "answers": {
+                        "Мне это не нужно": 2,
+                        "Сейчас попробую": 1
+                    },
+                    "other": "true",
+                    "other_val": 3
+                },
+                {
+                    "name": "А здесь ты сможешь выбрать не один, а несколько вариантов ответа. Попробуй",
+                    "type": "multi",
+                    "answers": {
+                        "Тык": 5,
+                        "Выбери меня": 3,
+                        "И меня тоже": 3
+                    }
+                },
+                {
+                    "name": "И у нас есть поле для того, чтобы написать развернутый ответ. Как тебе наше приложение?",
+                    "type": "open",
+                    "other_val": 6
+                }
+            ],
+            "targets": {
+                "gender": "0",
+                "age": {
+                    "from": "0",
+                    "to": "99"
+                }
+            }
+        }`;
+        return HttpService.parseJson(json)
     }
 }

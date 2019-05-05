@@ -16,6 +16,14 @@ export default function modelsReducer(state = initModels(), action) {
             ...state,
             pollModels: updatedModels
         }
+    } else if (action.type === "WATCH_NEXT_ANSWER") {
+        let updatedAnsweredPollModels = state.answeredPollModels;
+        updatedAnsweredPollModels[action.pollNum].currentQuestionNum++;
+        //updatedAnsweredPollModels[action.pollNum].answers.push(action.answer);
+        return {
+            ...state,
+            answeredPollModels: updatedAnsweredPollModels
+        }
     } else if (action.type === "GOT_POLLS_FROM_BACKEND") {
         return {
             ...state,
