@@ -71,7 +71,7 @@ class StartInfoPanel extends React.Component {
                         </div>
                     </Carousel>
 
-                    <Button style={buttonStyle} size="xl" level="commerce" onClick={() => {this.props.openApp(); this.props.loadAction();}}>Открыть приложение</Button>
+                    <Button style={buttonStyle} size="xl" level="commerce" onClick={() => {this.props.loadAction()}}>Открыть приложение</Button>
                 </Div>
             </Panel>
         );

@@ -21,8 +21,6 @@ connect.subscribe((e) => {
             console.log(e.detail.type);
     }
 });
-
-
 // Init VK App
 connect.send('VKWebAppInit', {});
 

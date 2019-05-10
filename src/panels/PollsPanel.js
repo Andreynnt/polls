@@ -113,7 +113,7 @@ export class PollsPanel extends React.Component {
         let text = mode === 'passed' ? 'Пройденных опросов нет' : 'Новых опросов еще нет';
 
         return (
-            <Div style={{height: "80vh", zIndex: "0" , display: "flex", alignItems: "center", justifyContent: "center"}}>
+            <Div style={{height: "100vh", zIndex: "0" , display: "flex", alignItems: "center", justifyContent: "center"}}>
                 <div style={{color: "var(--text_secondary)"}}>{text}</div>
             </Div>
         );

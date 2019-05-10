@@ -13,7 +13,6 @@ import * as AppService from "./services/AppService";
 import LeadersPanel from "./panels/LeadersPanel";
 import StartInfoPanel from "./panels/StartInfoPanel";
 
-
 export const appModes = {
 	debug: 'debug',
 	prod: 'prod'
@@ -25,7 +24,16 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		AppService.shared().mode = mode;
-		this.loadAllInfo();
+
+		this.state = {
+			authTokenForVK: window.localStorage.getItem('authTokenForVK')
+		};
+
+		if (this.state.authTokenForVK) {
+			this.loadAllInfo();
+		} else {
+			this.props.openStartInfo();
+		}
 	}
 
 	loadAllInfo = () => {
@@ -58,19 +66,18 @@ class App extends React.Component {
 				this.props.gotError(error);
 				return;
 			}
-			console.log("is user new? - ", isNew);
-			if (isNew === true) {
-				this.props.openStartInfo("StartInfoPanel");
-			} else {
+			// if (isNew === true) {
+			// 	this.props.openStartInfo("StartInfoPanel");
+			// } else {
 				this.props.gotUserInfo(response.response[0]);
 				this.getProfile(response.response[0].id);
-				this.setWebModels(this.props.user.user);
+				this.getWebModels(this.props.user.user);
 				this.setLeaders();
-			}
+			//}
 		})
 	};
 
-	setWebModels = (user) => {
+	getWebModels = (user) => {
 		HttpService.getPolls(user, (models, error) => {
 			if (error) {
 				console.log("error", error);
@@ -78,14 +85,13 @@ class App extends React.Component {
 				this.props.gotError(error);
 				return;
 			}
-			console.log("setWebModels() success: ", models);
+			console.log("getWebModels() success: ", models);
 			this.props.gotPollModels(models);
-			//this.props.closeMainPreloader();
-			this.setAnsweredWebModels(user.id);
+			this.getAnsweredWebModels(user.id);
 		});
 	};
 
-	setAnsweredWebModels = (id) => {
+	getAnsweredWebModels = (id) => {
 		HttpService.getUserPolls(id, (models, error) => {
 			if (error) {
 				console.log("error", error);
@@ -93,7 +99,7 @@ class App extends React.Component {
 				this.props.gotError(error);
 				return;
 			}
-			console.log("setAnsweredWebModels() success: ", models);
+			console.log("getAnsweredWebModels() success: ", models);
 			this.props.gotAnsweredPollModels(models);
 			this.props.closeMainPreloader();
 		});
@@ -134,58 +140,67 @@ class App extends React.Component {
 				console.error('getAuthToken(): error:', error);
 			} else {
 				const token = data ? data.access_token : "noToken";
-
+				if (data.access_token) {
+					window.localStorage.setItem('authTokenForVK', data.access_token);
+				} else {
+					window.localStorage.removeItem('authTokenForVK');
+				}
 				HttpService.getInfo(token, (error2, response) => {
 					if (error2) {
 						console.error(error2.toString());
-						//эта херня ломает профиль и закрытие
-						//this.props.gotUserInfo({first_name: error2.message})
 					} else {
 						this.checkUser(response);
-						// this.props.gotUserInfo(response.response[0]);
-						// this.getProfile(response.response[0].id);
-						// this.setWebModels(this.props.user.user);
-						// this.setLeaders();
 					}
 				});
 			}
 		});
 	};
 
+	openAccessMenu = () => {
+		HttpService.getAuthToken(({data, error}) => {
+			if (error) {
+				console.error('getAuthToken(): error:', error);
+			} else {
+				if (data.access_token) {
+					window.localStorage.setItem('authTokenForVK', data.access_token);
+					//this.setState({...this.state, authTokenForVK: data.access_token });
+					this.props.openPreloader();
+					this.loadAllInfo();
+				} else {
+					window.localStorage.removeItem('authTokenForVK');
+				}
+			}
+		});
+	};
+
 	render() {
-
-		let block = (
-			<StartInfoPanel id="StartInfoPanel" loadAction={() => this.loadAllInfo()}/>
-		);
-
-		// не первый старт
-		if (this.props.navigation.activeStory !== "StartInfoPanel") {
-			const preparedTabbar = (<SCTabbar/>);
-
-			block = (
-				<Epic activeStory={this.props.navigation.activeStory} tabbar={preparedTabbar}>
-					<View popout={<ScreenSpinner/>} id="preloader" activePanel="preloader">
-						<PreloaderPanel/>
-					</View>
-
-					<View popout={this.props.navigation.alert} id="polls"
-						  activePanel={this.props.navigation.activePanel}>
-						<Polls id="polls"/>
-						<Poll id="poll"/>
-					</View>
-
-					<View id="leaders" activePanel={this.props.navigation.activeStory}>
-						<LeadersPanel id="leaders"/>
-					</View>
-
-					<View id="profile" activePanel={this.props.navigation.activeStory}>
-						<ProfilePanel user={this.props.user.user} id="profile"/>
-					</View>
-				</Epic>
-			);
+		if (this.props.navigation.activePanel === "StartInfoPanel") {
+			return <StartInfoPanel id="StartInfoPanel" loadAction={() => this.openAccessMenu()}/>;
 		}
 
-		return block;
+		// не первый старт
+		const preparedTabbar = (<SCTabbar/>);
+		return (
+			<Epic activeStory={this.props.navigation.activeStory} tabbar={preparedTabbar}>
+				<View popout={<ScreenSpinner/>} id="preloader" activePanel="preloader">
+					<PreloaderPanel/>
+				</View>
+
+				<View popout={this.props.navigation.alert} id="polls"
+					  activePanel={this.props.navigation.activePanel}>
+					<Polls id="polls"/>
+					<Poll id="poll"/>
+				</View>
+
+				<View id="leaders" activePanel={this.props.navigation.activeStory}>
+					<LeadersPanel id="leaders"/>
+				</View>
+
+				<View id="profile" activePanel={this.props.navigation.activeStory}>
+					<ProfilePanel user={this.props.user.user} id="profile"/>
+				</View>
+			</Epic>
+		);
 	}
 }
 
@@ -226,6 +241,9 @@ const mapDispatchToProps = dispatch => {
 		},
 		openStartInfo: () => {
 			dispatch({ type: "CHANGE_STORY_AND_PANEL", payload: {story: "StartInfoPanel", panel: "StartInfoPanel"}})
+		},
+		openPreloader: () => {
+			dispatch({ type: "CHANGE_STORY_AND_PANEL", payload: {story: "preloader", panel: "preloader"}})
 		}
 	}
 };
